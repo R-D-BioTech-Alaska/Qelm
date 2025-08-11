@@ -25,7 +25,7 @@
 - **New noise mitigation options**: support for **Pauli twirling** and **zero‑noise extrapolation (ZNE)**. Pauli twirling randomly applies Pauli gates to transform complicated noise into a simpler stochastic channel:contentReference[oaicite:0]{index=0}, while zero‑noise extrapolation runs circuits at multiple noise levels and extrapolates to the zero‑noise result:contentReference[oaicite:1]{index=1}. These options can be toggled via the GUI or CLI, and ZNE scaling factors are user configurable.
 
 **QELM Quantum** (Connect to IBM quantum computers) *Last update 12/21/2024*  
-- Must have an IBM account (Free account alots 10 minutes per month)  
+- Must have an IBM account (Free account allots 10 minutes per month)  
 - Must have a basic understanding of running circuits  
 - Must be familiar with Quantum Computers (you can switch, but I usually use Brisbane for free)
 - 8/2/2025 - Qelm now has a drop in for backends. Future releases of Qelm will automatically have this feature. Quantum has been retired but still works perfectly.

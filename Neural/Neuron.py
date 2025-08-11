@@ -3,10 +3,10 @@
 
 """
 ====================================================================================================
-Quantum-Enhanced Language Model (QELM) - Nueron
+Quantum-Enhanced Language Model (QELM) - Neuron
 ====================================================================================================
 
-This script defines a comprehensive Quantum-Enhanced Language Model (QELM) - Nueron (Beta) leveraging Qiskit.
+This script defines a comprehensive Quantum-Enhanced Language Model (QELM) - Neuron (Beta) leveraging Qiskit.
 It incorporates advanced quantum techniques such as logical qubits with error correction,
 graphene-like layer structures, and scalable neural network architectures inspired by string theory
 and brain-like connectivity. The model is designed to simulate large-scale quantum neural networks
@@ -92,7 +92,7 @@ def normalize_vector(vec: np.ndarray) -> np.ndarray:
     return vec / norm
 
 # ============================
-# Quantum Neuron (20-Qubit Logical Unit) *If changing, stay below 100 or degredation occurs.
+# Quantum Neuron (20-Qubit Logical Unit) *If changing, stay below 100 or degradation occurs.
 # ============================
 
 class QuantumNeuron:
