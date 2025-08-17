@@ -209,32 +209,40 @@ def load_safetensors_to_df(path: str) -> "pd.DataFrame":
     if not _HAS_SFT:
         raise RuntimeError("safetensors not installed. Run: pip install safetensors")
     try:
-        tensors = sft_load_numpy(path)  
+        tensors = sft_load_numpy(path) 
         tensors = {k: _normalize_array_dtype(v) for k, v in tensors.items()}
+
     except Exception as e:
         msg = str(e)
-        if ("bfloat16" in msg or "not understood" in msg or "Unknown dtype" in msg) and _HAS_SFT_TORCH and _HAS_TORCH:
-            tt = sft_load_torch(path) 
+
+        if (("bfloat16" in msg) or ("not understood" in msg) or ("Unknown dtype" in msg)) and _HAS_SFT_TORCH and _HAS_TORCH:
+            tt = sft_load_torch(path)  
             tensors = {}
-            for k, v in tt.items():c
-                if v.dtype == torch.bfloat16 or v.dtype == torch.float16 or v.dtype == torch.float8_e5m2 or v.dtype == torch.float8_e4m3fn:
+            float8_e5m2 = getattr(torch, "float8_e5m2", None)
+            float8_e4m3fn = getattr(torch, "float8_e4m3fn", None)
+            lowp = {torch.bfloat16, torch.float16}
+            if float8_e5m2 is not None:
+                lowp.add(float8_e5m2)
+            if float8_e4m3fn is not None:
+                lowp.add(float8_e4m3fn)
+
+            for k, v in tt.items():
+                if v.dtype in lowp:
                     v = v.to(dtype=torch.float32)
                 tensors[k] = v.detach().cpu().numpy()
         else:
             raise
-    keys = list(tensors.keys())
-    X = tensors.get("X")
-    y = tensors.get("y")
-    if X is None:
-        for k in keys:
-            if tensors[k].ndim == 2:
-                X = tensors[k]; break
-    if y is None:
-        for k in keys:
-            if tensors[k].ndim == 1 and (X is None or tensors[k].shape[0] == X.shape[0]):
-                y = tensors[k]; break
+
+    X, y = None, None
+    for k, arr in tensors.items():
+        if arr.ndim == 2 and X is None:
+            X = arr
+        elif arr.ndim == 1 and y is None:
+            y = arr
+
     if X is None:
         raise ValueError("safetensors file lacks a 2D features tensor. Expected key 'X' or any 2D tensor.")
+
     return _df_from_Xy(X, y)
 
 def _from_bf16_raw_to_f32(u16: "np.ndarray") -> "np.ndarray":
