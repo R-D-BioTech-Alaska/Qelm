@@ -1,0 +1,301 @@
+### Section 1: Physics and Methods
+A concise note on physics: Conservation laws arise from symmetries via Noether's theorem. In experiments, the relation F = ma often frames analysis. [sample=0] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of quantum mechanics: The Schrödinger equation governs the evolution of quantum states. Within experiments, the relation pV = nRT often frames analysis. [sample=1] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about thermodynamics: Entropy tends to increase in closed systems, defining an arrow of time. Across experiments, the relation E = mc^2 often frames analysis. [sample=2] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to electromagnetism: Maxwell's equations unify electricity, magnetism, and light. Under experiments, the relation ΔG = ΔH − TΔS often frames analysis. [sample=3] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on astronomy: Stars fuse lighter nuclei into heavier ones, releasing energy. During experiments, the relation I = V/R often frames analysis. [sample=4] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of cosmology: Spectroscopy reveals composition through characteristic lines. Beyond experiments, the relation V = IR often frames analysis. [sample=5] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of astrophysics: Catalysts lower activation energy and increase reaction rate. Amid experiments, the relation P = IV often frames analysis. [sample=6] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to planetary science: Enzymes are biological catalysts that follow Michaelis–Menten kinetics. Through experiments, the relation v = fλ often frames analysis. [sample=7] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 2: Chemistry and Methods
+A concise note on chemistry: DNA stores genetic information using four nucleotides. In experiments, the relation σ = Eε often frames analysis. [sample=8] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of organic chemistry: Natural selection acts on heritable variation within populations. Within experiments, the relation Q = mcΔT often frames analysis. [sample=9] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about inorganic chemistry: Neurons transmit signals via action potentials and synaptic release. Across experiments, the relation ∇·E = ρ/ε0 often frames analysis. [sample=10] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to physical chemistry: Homeostasis maintains internal stability through feedback loops. Under experiments, the relation ∇×E = −∂B/∂t often frames analysis. [sample=11] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on biochemistry: Plate tectonics explains earthquakes, mountains, and seafloor spreading. During experiments, the relation ∇·B = 0 often frames analysis. [sample=12] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of molecular biology: The hydrologic cycle transports water through evaporation and precipitation. Beyond experiments, the relation ∇×B = μ0J + μ0ε0∂E/∂t often frames analysis. [sample=13] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of genetics: Greenhouse gases absorb and re-emit infrared radiation. Amid experiments, the relation iħ ∂ψ/∂t = Ĥψ often frames analysis. [sample=14] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to microbiology: The central limit theorem explains the emergence of normal distributions. Through experiments, the relation E = (n + 1/2)ħω often frames analysis. [sample=15] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 3: Neuroscience and Methods
+A concise note on neuroscience: Eigenvalues characterize linear transformations and system modes. In experiments, the relation λ = h/p often frames analysis. [sample=16] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of physiology: Gradients guide optimization by pointing to steepest ascent. Within experiments, the relation Δx Δp ≥ ħ/2 often frames analysis. [sample=17] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about ecology: Neural networks approximate functions by composing nonlinearities. Across experiments, the relation dN/dt = rN(1 − N/K) often frames analysis. [sample=18] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to evolution: Robust experiments include controls, replication, and preregistration. Under experiments, the relation C = ε0A/d often frames analysis. [sample=19] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on geology: Peer review evaluates methods, analysis, and reproducibility. During experiments, the relation ω = 2πf often frames analysis. [sample=20] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of geophysics: Dimensional analysis checks equations for consistency. Beyond experiments, the relation τ = r × F often frames analysis. [sample=21] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of oceanography: Correlation does not imply causation; confounding variables may exist. Amid experiments, the relation a = dv/dt often frames analysis. [sample=22] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to atmospheric science: Measurements report uncertainty with significant figures and intervals. Through experiments, the relation W = ∫ F·dx often frames analysis. [sample=23] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 4: Mathematics and Methods
+A concise note on mathematics: Energy is quantized in oscillators: E = (n + 1/2)ħω. In experiments, the relation L = μ0N^2A/ℓ often frames analysis. [sample=24] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of statistics: The Gibbs free energy predicts spontaneity at constant T and P. Within experiments, the relation R = ρℓ/A often frames analysis. [sample=25] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about linear algebra: pH is the negative base-10 logarithm of the hydrogen ion activity. Across experiments, the relation F = ma often frames analysis. [sample=26] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to calculus: The Navier–Stokes equations describe viscous fluid flow. Under experiments, the relation pV = nRT often frames analysis. [sample=27] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on computer science: Fourier transforms decompose signals into frequencies. During experiments, the relation E = mc^2 often frames analysis. [sample=28] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of machine learning: Bayes' theorem updates beliefs with new evidence. Beyond experiments, the relation ΔG = ΔH − TΔS often frames analysis. [sample=29] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of data science: Markov processes have memoryless transitions between states. Amid experiments, the relation I = V/R often frames analysis. [sample=30] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to scientific computing: Monte Carlo methods estimate integrals via random sampling. Through experiments, the relation V = IR often frames analysis. [sample=31] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 5: Materials Science and Methods
+A concise note on materials science: Control systems use feedback to track references and reject disturbances. In experiments, the relation P = IV often frames analysis. [sample=32] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of nanotechnology: Semiconductors enable transistors by controlling carrier densities. Within experiments, the relation v = fλ often frames analysis. [sample=33] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about robotics: Superconductors expel magnetic fields via the Meissner effect. Across experiments, the relation σ = Eε often frames analysis. [sample=34] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to control theory: CRISPR-Cas systems edit genomes at targeted loci. Under experiments, the relation Q = mcΔT often frames analysis. [sample=35] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on physics: Metabolism couples exergonic and endergonic reactions using ATP. During experiments, the relation ∇·E = ρ/ε0 often frames analysis. [sample=36] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of quantum mechanics: Conservation laws arise from symmetries via Noether's theorem. Beyond experiments, the relation ∇×E = −∂B/∂t often frames analysis. [sample=37] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of thermodynamics: The Schrödinger equation governs the evolution of quantum states. Amid experiments, the relation ∇·B = 0 often frames analysis. [sample=38] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to electromagnetism: Entropy tends to increase in closed systems, defining an arrow of time. Through experiments, the relation ∇×B = μ0J + μ0ε0∂E/∂t often frames analysis. [sample=39] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 6: Astronomy and Methods
+A concise note on astronomy: Maxwell's equations unify electricity, magnetism, and light. In experiments, the relation iħ ∂ψ/∂t = Ĥψ often frames analysis. [sample=40] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of cosmology: Stars fuse lighter nuclei into heavier ones, releasing energy. Within experiments, the relation E = (n + 1/2)ħω often frames analysis. [sample=41] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about astrophysics: Spectroscopy reveals composition through characteristic lines. Across experiments, the relation λ = h/p often frames analysis. [sample=42] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to planetary science: Catalysts lower activation energy and increase reaction rate. Under experiments, the relation Δx Δp ≥ ħ/2 often frames analysis. [sample=43] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on chemistry: Enzymes are biological catalysts that follow Michaelis–Menten kinetics. During experiments, the relation dN/dt = rN(1 − N/K) often frames analysis. [sample=44] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of organic chemistry: DNA stores genetic information using four nucleotides. Beyond experiments, the relation C = ε0A/d often frames analysis. [sample=45] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of inorganic chemistry: Natural selection acts on heritable variation within populations. Amid experiments, the relation ω = 2πf often frames analysis. [sample=46] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to physical chemistry: Neurons transmit signals via action potentials and synaptic release. Through experiments, the relation τ = r × F often frames analysis. [sample=47] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 7: Biochemistry and Methods
+A concise note on biochemistry: Homeostasis maintains internal stability through feedback loops. In experiments, the relation a = dv/dt often frames analysis. [sample=48] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of molecular biology: Plate tectonics explains earthquakes, mountains, and seafloor spreading. Within experiments, the relation W = ∫ F·dx often frames analysis. [sample=49] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about genetics: The hydrologic cycle transports water through evaporation and precipitation. Across experiments, the relation L = μ0N^2A/ℓ often frames analysis. [sample=50] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to microbiology: Greenhouse gases absorb and re-emit infrared radiation. Under experiments, the relation R = ρℓ/A often frames analysis. [sample=51] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on neuroscience: The central limit theorem explains the emergence of normal distributions. During experiments, the relation F = ma often frames analysis. [sample=52] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of physiology: Eigenvalues characterize linear transformations and system modes. Beyond experiments, the relation pV = nRT often frames analysis. [sample=53] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of ecology: Gradients guide optimization by pointing to steepest ascent. Amid experiments, the relation E = mc^2 often frames analysis. [sample=54] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to evolution: Neural networks approximate functions by composing nonlinearities. Through experiments, the relation ΔG = ΔH − TΔS often frames analysis. [sample=55] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 8: Geology and Methods
+A concise note on geology: Robust experiments include controls, replication, and preregistration. In experiments, the relation I = V/R often frames analysis. [sample=56] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of geophysics: Peer review evaluates methods, analysis, and reproducibility. Within experiments, the relation V = IR often frames analysis. [sample=57] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about oceanography: Dimensional analysis checks equations for consistency. Across experiments, the relation P = IV often frames analysis. [sample=58] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to atmospheric science: Correlation does not imply causation; confounding variables may exist. Under experiments, the relation v = fλ often frames analysis. [sample=59] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on mathematics: Measurements report uncertainty with significant figures and intervals. During experiments, the relation σ = Eε often frames analysis. [sample=60] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of statistics: Energy is quantized in oscillators: E = (n + 1/2)ħω. Beyond experiments, the relation Q = mcΔT often frames analysis. [sample=61] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of linear algebra: The Gibbs free energy predicts spontaneity at constant T and P. Amid experiments, the relation ∇·E = ρ/ε0 often frames analysis. [sample=62] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to calculus: pH is the negative base-10 logarithm of the hydrogen ion activity. Through experiments, the relation ∇×E = −∂B/∂t often frames analysis. [sample=63] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 9: Computer Science and Methods
+A concise note on computer science: The Navier–Stokes equations describe viscous fluid flow. In experiments, the relation ∇·B = 0 often frames analysis. [sample=64] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of machine learning: Fourier transforms decompose signals into frequencies. Within experiments, the relation ∇×B = μ0J + μ0ε0∂E/∂t often frames analysis. [sample=65] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about data science: Bayes' theorem updates beliefs with new evidence. Across experiments, the relation iħ ∂ψ/∂t = Ĥψ often frames analysis. [sample=66] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to scientific computing: Markov processes have memoryless transitions between states. Under experiments, the relation E = (n + 1/2)ħω often frames analysis. [sample=67] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on materials science: Monte Carlo methods estimate integrals via random sampling. During experiments, the relation λ = h/p often frames analysis. [sample=68] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of nanotechnology: Control systems use feedback to track references and reject disturbances. Beyond experiments, the relation Δx Δp ≥ ħ/2 often frames analysis. [sample=69] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of robotics: Semiconductors enable transistors by controlling carrier densities. Amid experiments, the relation dN/dt = rN(1 − N/K) often frames analysis. [sample=70] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to control theory: Superconductors expel magnetic fields via the Meissner effect. Through experiments, the relation C = ε0A/d often frames analysis. [sample=71] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 10: Physics and Methods
+A concise note on physics: CRISPR-Cas systems edit genomes at targeted loci. In experiments, the relation ω = 2πf often frames analysis. [sample=72] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of quantum mechanics: Metabolism couples exergonic and endergonic reactions using ATP. Within experiments, the relation τ = r × F often frames analysis. [sample=73] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about thermodynamics: Conservation laws arise from symmetries via Noether's theorem. Across experiments, the relation a = dv/dt often frames analysis. [sample=74] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to electromagnetism: The Schrödinger equation governs the evolution of quantum states. Under experiments, the relation W = ∫ F·dx often frames analysis. [sample=75] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on astronomy: Entropy tends to increase in closed systems, defining an arrow of time. During experiments, the relation L = μ0N^2A/ℓ often frames analysis. [sample=76] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of cosmology: Maxwell's equations unify electricity, magnetism, and light. Beyond experiments, the relation R = ρℓ/A often frames analysis. [sample=77] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of astrophysics: Stars fuse lighter nuclei into heavier ones, releasing energy. Amid experiments, the relation F = ma often frames analysis. [sample=78] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to planetary science: Spectroscopy reveals composition through characteristic lines. Through experiments, the relation pV = nRT often frames analysis. [sample=79] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 11: Chemistry and Methods
+A concise note on chemistry: Catalysts lower activation energy and increase reaction rate. In experiments, the relation E = mc^2 often frames analysis. [sample=80] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of organic chemistry: Enzymes are biological catalysts that follow Michaelis–Menten kinetics. Within experiments, the relation ΔG = ΔH − TΔS often frames analysis. [sample=81] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about inorganic chemistry: DNA stores genetic information using four nucleotides. Across experiments, the relation I = V/R often frames analysis. [sample=82] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to physical chemistry: Natural selection acts on heritable variation within populations. Under experiments, the relation V = IR often frames analysis. [sample=83] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on biochemistry: Neurons transmit signals via action potentials and synaptic release. During experiments, the relation P = IV often frames analysis. [sample=84] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of molecular biology: Homeostasis maintains internal stability through feedback loops. Beyond experiments, the relation v = fλ often frames analysis. [sample=85] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of genetics: Plate tectonics explains earthquakes, mountains, and seafloor spreading. Amid experiments, the relation σ = Eε often frames analysis. [sample=86] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to microbiology: The hydrologic cycle transports water through evaporation and precipitation. Through experiments, the relation Q = mcΔT often frames analysis. [sample=87] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 12: Neuroscience and Methods
+A concise note on neuroscience: Greenhouse gases absorb and re-emit infrared radiation. In experiments, the relation ∇·E = ρ/ε0 often frames analysis. [sample=88] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of physiology: The central limit theorem explains the emergence of normal distributions. Within experiments, the relation ∇×E = −∂B/∂t often frames analysis. [sample=89] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about ecology: Eigenvalues characterize linear transformations and system modes. Across experiments, the relation ∇·B = 0 often frames analysis. [sample=90] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to evolution: Gradients guide optimization by pointing to steepest ascent. Under experiments, the relation ∇×B = μ0J + μ0ε0∂E/∂t often frames analysis. [sample=91] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on geology: Neural networks approximate functions by composing nonlinearities. During experiments, the relation iħ ∂ψ/∂t = Ĥψ often frames analysis. [sample=92] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of geophysics: Robust experiments include controls, replication, and preregistration. Beyond experiments, the relation E = (n + 1/2)ħω often frames analysis. [sample=93] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of oceanography: Peer review evaluates methods, analysis, and reproducibility. Amid experiments, the relation λ = h/p often frames analysis. [sample=94] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to atmospheric science: Dimensional analysis checks equations for consistency. Through experiments, the relation Δx Δp ≥ ħ/2 often frames analysis. [sample=95] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 13: Mathematics and Methods
+A concise note on mathematics: Correlation does not imply causation; confounding variables may exist. In experiments, the relation dN/dt = rN(1 − N/K) often frames analysis. [sample=96] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of statistics: Measurements report uncertainty with significant figures and intervals. Within experiments, the relation C = ε0A/d often frames analysis. [sample=97] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about linear algebra: Energy is quantized in oscillators: E = (n + 1/2)ħω. Across experiments, the relation ω = 2πf often frames analysis. [sample=98] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to calculus: The Gibbs free energy predicts spontaneity at constant T and P. Under experiments, the relation τ = r × F often frames analysis. [sample=99] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on computer science: pH is the negative base-10 logarithm of the hydrogen ion activity. During experiments, the relation a = dv/dt often frames analysis. [sample=100] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of machine learning: The Navier–Stokes equations describe viscous fluid flow. Beyond experiments, the relation W = ∫ F·dx often frames analysis. [sample=101] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of data science: Fourier transforms decompose signals into frequencies. Amid experiments, the relation L = μ0N^2A/ℓ often frames analysis. [sample=102] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to scientific computing: Bayes' theorem updates beliefs with new evidence. Through experiments, the relation R = ρℓ/A often frames analysis. [sample=103] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 14: Materials Science and Methods
+A concise note on materials science: Markov processes have memoryless transitions between states. In experiments, the relation F = ma often frames analysis. [sample=104] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of nanotechnology: Monte Carlo methods estimate integrals via random sampling. Within experiments, the relation pV = nRT often frames analysis. [sample=105] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about robotics: Control systems use feedback to track references and reject disturbances. Across experiments, the relation E = mc^2 often frames analysis. [sample=106] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to control theory: Semiconductors enable transistors by controlling carrier densities. Under experiments, the relation ΔG = ΔH − TΔS often frames analysis. [sample=107] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on physics: Superconductors expel magnetic fields via the Meissner effect. During experiments, the relation I = V/R often frames analysis. [sample=108] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of quantum mechanics: CRISPR-Cas systems edit genomes at targeted loci. Beyond experiments, the relation V = IR often frames analysis. [sample=109] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of thermodynamics: Metabolism couples exergonic and endergonic reactions using ATP. Amid experiments, the relation P = IV often frames analysis. [sample=110] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to electromagnetism: Conservation laws arise from symmetries via Noether's theorem. Through experiments, the relation v = fλ often frames analysis. [sample=111] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 15: Astronomy and Methods
+A concise note on astronomy: The Schrödinger equation governs the evolution of quantum states. In experiments, the relation σ = Eε often frames analysis. [sample=112] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of cosmology: Entropy tends to increase in closed systems, defining an arrow of time. Within experiments, the relation Q = mcΔT often frames analysis. [sample=113] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about astrophysics: Maxwell's equations unify electricity, magnetism, and light. Across experiments, the relation ∇·E = ρ/ε0 often frames analysis. [sample=114] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to planetary science: Stars fuse lighter nuclei into heavier ones, releasing energy. Under experiments, the relation ∇×E = −∂B/∂t often frames analysis. [sample=115] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on chemistry: Spectroscopy reveals composition through characteristic lines. During experiments, the relation ∇·B = 0 often frames analysis. [sample=116] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of organic chemistry: Catalysts lower activation energy and increase reaction rate. Beyond experiments, the relation ∇×B = μ0J + μ0ε0∂E/∂t often frames analysis. [sample=117] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of inorganic chemistry: Enzymes are biological catalysts that follow Michaelis–Menten kinetics. Amid experiments, the relation iħ ∂ψ/∂t = Ĥψ often frames analysis. [sample=118] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to physical chemistry: DNA stores genetic information using four nucleotides. Through experiments, the relation E = (n + 1/2)ħω often frames analysis. [sample=119] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 16: Biochemistry and Methods
+A concise note on biochemistry: Natural selection acts on heritable variation within populations. In experiments, the relation λ = h/p often frames analysis. [sample=120] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of molecular biology: Neurons transmit signals via action potentials and synaptic release. Within experiments, the relation Δx Δp ≥ ħ/2 often frames analysis. [sample=121] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about genetics: Homeostasis maintains internal stability through feedback loops. Across experiments, the relation dN/dt = rN(1 − N/K) often frames analysis. [sample=122] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to microbiology: Plate tectonics explains earthquakes, mountains, and seafloor spreading. Under experiments, the relation C = ε0A/d often frames analysis. [sample=123] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on neuroscience: The hydrologic cycle transports water through evaporation and precipitation. During experiments, the relation ω = 2πf often frames analysis. [sample=124] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of physiology: Greenhouse gases absorb and re-emit infrared radiation. Beyond experiments, the relation τ = r × F often frames analysis. [sample=125] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of ecology: The central limit theorem explains the emergence of normal distributions. Amid experiments, the relation a = dv/dt often frames analysis. [sample=126] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to evolution: Eigenvalues characterize linear transformations and system modes. Through experiments, the relation W = ∫ F·dx often frames analysis. [sample=127] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 17: Geology and Methods
+A concise note on geology: Gradients guide optimization by pointing to steepest ascent. In experiments, the relation L = μ0N^2A/ℓ often frames analysis. [sample=128] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of geophysics: Neural networks approximate functions by composing nonlinearities. Within experiments, the relation R = ρℓ/A often frames analysis. [sample=129] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about oceanography: Robust experiments include controls, replication, and preregistration. Across experiments, the relation F = ma often frames analysis. [sample=130] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to atmospheric science: Peer review evaluates methods, analysis, and reproducibility. Under experiments, the relation pV = nRT often frames analysis. [sample=131] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on mathematics: Dimensional analysis checks equations for consistency. During experiments, the relation E = mc^2 often frames analysis. [sample=132] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of statistics: Correlation does not imply causation; confounding variables may exist. Beyond experiments, the relation ΔG = ΔH − TΔS often frames analysis. [sample=133] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of linear algebra: Measurements report uncertainty with significant figures and intervals. Amid experiments, the relation I = V/R often frames analysis. [sample=134] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to calculus: Energy is quantized in oscillators: E = (n + 1/2)ħω. Through experiments, the relation V = IR often frames analysis. [sample=135] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 18: Computer Science and Methods
+A concise note on computer science: The Gibbs free energy predicts spontaneity at constant T and P. In experiments, the relation P = IV often frames analysis. [sample=136] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of machine learning: pH is the negative base-10 logarithm of the hydrogen ion activity. Within experiments, the relation v = fλ often frames analysis. [sample=137] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about data science: The Navier–Stokes equations describe viscous fluid flow. Across experiments, the relation σ = Eε often frames analysis. [sample=138] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to scientific computing: Fourier transforms decompose signals into frequencies. Under experiments, the relation Q = mcΔT often frames analysis. [sample=139] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on materials science: Bayes' theorem updates beliefs with new evidence. During experiments, the relation ∇·E = ρ/ε0 often frames analysis. [sample=140] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of nanotechnology: Markov processes have memoryless transitions between states. Beyond experiments, the relation ∇×E = −∂B/∂t often frames analysis. [sample=141] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of robotics: Monte Carlo methods estimate integrals via random sampling. Amid experiments, the relation ∇·B = 0 often frames analysis. [sample=142] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to control theory: Control systems use feedback to track references and reject disturbances. Through experiments, the relation ∇×B = μ0J + μ0ε0∂E/∂t often frames analysis. [sample=143] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 19: Physics and Methods
+A concise note on physics: Semiconductors enable transistors by controlling carrier densities. In experiments, the relation iħ ∂ψ/∂t = Ĥψ often frames analysis. [sample=144] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of quantum mechanics: Superconductors expel magnetic fields via the Meissner effect. Within experiments, the relation E = (n + 1/2)ħω often frames analysis. [sample=145] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about thermodynamics: CRISPR-Cas systems edit genomes at targeted loci. Across experiments, the relation λ = h/p often frames analysis. [sample=146] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to electromagnetism: Metabolism couples exergonic and endergonic reactions using ATP. Under experiments, the relation Δx Δp ≥ ħ/2 often frames analysis. [sample=147] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on astronomy: Conservation laws arise from symmetries via Noether's theorem. During experiments, the relation dN/dt = rN(1 − N/K) often frames analysis. [sample=148] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of cosmology: The Schrödinger equation governs the evolution of quantum states. Beyond experiments, the relation C = ε0A/d often frames analysis. [sample=149] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of astrophysics: Entropy tends to increase in closed systems, defining an arrow of time. Amid experiments, the relation ω = 2πf often frames analysis. [sample=150] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to planetary science: Maxwell's equations unify electricity, magnetism, and light. Through experiments, the relation τ = r × F often frames analysis. [sample=151] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+### Section 20: Chemistry and Methods
+A concise note on chemistry: Stars fuse lighter nuclei into heavier ones, releasing energy. In experiments, the relation a = dv/dt often frames analysis. [sample=152] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+A brief summary of organic chemistry: Spectroscopy reveals composition through characteristic lines. Within experiments, the relation W = ∫ F·dx often frames analysis. [sample=153] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Key points about inorganic chemistry: Catalysts lower activation energy and increase reaction rate. Across experiments, the relation L = μ0N^2A/ℓ often frames analysis. [sample=154] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Short guide to physical chemistry: Enzymes are biological catalysts that follow Michaelis–Menten kinetics. Under experiments, the relation R = ρℓ/A often frames analysis. [sample=155] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Research overview on biochemistry: DNA stores genetic information using four nucleotides. During experiments, the relation F = ma often frames analysis. [sample=156] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Core ideas of molecular biology: Natural selection acts on heritable variation within populations. Beyond experiments, the relation pV = nRT often frames analysis. [sample=157] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+Fundamentals of genetics: Neurons transmit signals via action potentials and synaptic release. Amid experiments, the relation E = mc^2 often frames analysis. [sample=158] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+An introduction to microbiology: Homeostasis maintains internal stability through feedback loops. Through experiments, the relation ΔG = ΔH − TΔS often frames analysis. [sample=159] Data quality, calibration, and model selection matter; report assumptions and uncertainties explicitly.
+metric, definition, typical_units
+accuracy, correct_predictions/total, 0-1
+precision, tp/(tp+fp), 0-1
+recall, tp/(tp+fn), 0-1
+f1, 2*precision*recall/(precision+recall), 0-1
+
+Note: This dataset is synthetic and intended for model pretraining and debugging.
