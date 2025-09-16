@@ -1,5 +1,7 @@
 # Qelm-Moleque
 
+#Update 9/16/2025 - Added ibm backend and a few other fixes. Backend will currently only work with a paid account, free teir will not work. Be careful with this.
+
 Quantum-inspired **QELM** for small-molecule discovery.
 Score activity/ADMET, rank libraries, and guide lead optimization — with a fast CPU-friendly simulator. QPU connections will be added later.
 
