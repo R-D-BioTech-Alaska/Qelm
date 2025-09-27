@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="20" role="img" aria-label="doi: 10.13140/RG.2.2.11844.90243">
+  <title>doi: 10.13140/RG.2.2.11844.90243</title>
+  <a href="https://doi.org/10.13140/RG.2.2.11844.90243" target="_blank">
+    <mask id="round">
+      <rect width="250" height="20" rx="3" fill="#fff"/>
+    </mask>
+    <g mask="url(#round)">
+      <rect width="40" height="20" fill="#555"/>
+      <rect x="40" width="210" height="20" fill="#007ec6"/>
+      <rect width="250" height="20" fill="url(#smooth)"/>
+    </g>
+    <g aria-hidden="true" fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,Geneva,sans-serif" font-size="11">
+      <text x="20" y="14">doi</text>
+      <text x="145" y="14">10.13140/RG.2.2.11844.90243</text>
+    </g>
+  </a>
+</svg>
