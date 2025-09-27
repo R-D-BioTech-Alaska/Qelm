@@ -11,7 +11,7 @@
 
 # Quantum‑Enhanced Language Model (QELM) 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) ![Python](https://img.shields.io/badge/python-3.7%2B-blue)  ![Qiskit](https://img.shields.io/badge/Qiskit-1.4.2-orange)  ![Qiskit Aer](https://img.shields.io/badge/Qiskit_Aer-0.15.1-green)  ![GitHub Stars](https://img.shields.io/github/stars/R-D-BioTech-Alaska/QELM?style=social) [![PyPI Downloads](https://static.pepy.tech/badge/qelm)](https://pepy.tech/projects/qelm) [![PyPI](https://img.shields.io/pypi/v/qelm.svg)](https://pypi.org/project/qelm/) ![Days active](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2FR-D-BioTech-Alaska%2FQelm%2Fmain%2Fbadges%2Fdays_active.json)
-[![DOI](https://zenodo.org/badge/900253888.svg)](https://doi.org/10.13140/RG.2.2.11844.90243)
+[![DOI](docs/images/doi-10.13140-RG.2.2.11844.90243-badge.svg)](https://doi.org/10.13140/RG.2.2.11844.90243)
 
 
 
