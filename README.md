@@ -29,6 +29,7 @@
 - Must have a basic understanding of running circuits  
 - Must be familiar with Quantum Computers (you can switch, but I usually use Brisbane for free)
 - 8/2/2025 - Qelm now has a drop in for backends. Future releases of Qelm will automatically have this feature. Quantum has been retired but still works perfectly.
+- 11/11/2025 - 2.0 will be released soon.
 
 ---
 
