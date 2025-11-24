@@ -131,17 +131,21 @@ Near-term quantum computers (NISQ devices) are prone to errors and limited qubit
 
 ## 7. Recommended Further Reading
 
-1. **The Bypassing Holevo.Doc**  
+1. **Bypassing Holevo**  
    - Explains exactly how QELM remains consistent with Holevo’s limit on classical information extraction.  
-   - [Link](https://github.com/R-D-BioTech-Alaska/Qelm/blob/main/Documentation/Bypassing%20Holevo.Doc)  
+   - [Bypassing Holevo](https://github.com/R-D-BioTech-Alaska/Qelm/blob/main/Documentation/Bypassing%20Holevo.Doc)
+  
+2. **Holevos Alternative**
+   - Additional information relating to Qelm's methods.
+   - [Holevo's Alternative](https://github.com/R-D-BioTech-Alaska/Qelm/blob/main/Documentation/HolevosAlternative.doc)
 
-2. **Nielsen & Chuang, _Quantum Computation and Quantum Information_**  
+4. **Nielsen & Chuang, _Quantum Computation and Quantum Information_**  
    - The classic reference for quantum information theory and the foundation of the constraints we face.  
 
-3. **Grover’s Algorithm**  
+5. **Grover’s Algorithm**  
    - Various resources detail how a quadratic speedup in search could apply to tasks like token retrieval or subset queries in language modeling.  
 
-4. **Preskill, J.** (2018). *Quantum computing in the NISQ era and beyond.* *Quantum*, 2, 79.  
+6. **Preskill, J.** (2018). *Quantum computing in the NISQ era and beyond.* *Quantum*, 2, 79.  
    - Discusses near-term quantum devices (NISQ) and the challenges bridging theoretical quantum advantages to real hardware constraints.
 
 ---
