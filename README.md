@@ -27,7 +27,7 @@
 **QELM Quantum** (Connect to IBM quantum computers) *Last update 12/21/2024*  
 - Must have an IBM account (Free account alots 10 minutes per month)  
 - Must have a basic understanding of running circuits  
-- Must be familiar with Quantum Computers (you can switch, but I usually use Brisbane for free)
+- Must be familiar with Quantum Computers (you can switch, but I usually use Brisbane for free) *Brisbane is no longer available, use ibm_marrakesh for the best runs.
 - 8/2/2025 - Qelm now has a drop in for backends. Future releases of Qelm will automatically have this feature. Quantum has been retired but still works perfectly.
 - 11/11/2025 - 2.0 will be released soon.
 
