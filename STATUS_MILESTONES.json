@@ -2252,8 +2252,38 @@
       "date": "2025-11-22",
       "sha": "c829aba",
       "subject": "chore(status): # QELM — Day 360"
+    },
+    {
+      "date": "2025-11-23",
+      "sha": "4594abb",
+      "subject": "Revise QELM Quantum requirements and updates"
+    },
+    {
+      "date": "2025-11-23",
+      "sha": "fe5807b",
+      "subject": "chore(status): # QELM — Day 361"
+    },
+    {
+      "date": "2025-11-24",
+      "sha": "0de4599",
+      "subject": "Rename QiskitInstance.qsm to QiskitInstance.qasm"
+    },
+    {
+      "date": "2025-11-24",
+      "sha": "7c72e00",
+      "subject": "Add QiskitInstance.qsm with quantum circuit implementation"
+    },
+    {
+      "date": "2025-11-24",
+      "sha": "bd4e1d8",
+      "subject": "Update readme.md"
+    },
+    {
+      "date": "2025-11-24",
+      "sha": "f220899",
+      "subject": "Rename QiskitInstance.qasm to QiskitInstance.py"
     }
   ],
-  "last_commit_sha": "c829abaae0085d7baeab3703dfb7bddffba73fce",
-  "last_checked": "2025-11-24T03:00:11Z"
+  "last_commit_sha": "f220899ed6848066e849402a553f752374b35a8b",
+  "last_checked": "2025-11-25T02:52:27Z"
 }
