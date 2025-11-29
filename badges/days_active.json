@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "label": "days active",
-  "message": "365",
+  "message": "366",
   "color": "blue",
   "cacheSeconds": 300
 }
