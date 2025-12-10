@@ -391,5 +391,8 @@ For additional guidance, collaboration, or bug reports:
 * **GitHub**: [R‑D‑BioTech‑Alaska](https://github.com/R-D-BioTech-Alaska)
 * **Website**: [RDBioTech.org](http://RDBioTech.org)
 * **Website**: [Qelm.org](https://Qelm.org)
+  
+<a class="libutton" href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=inserian" target="_blank">Follow on LinkedIn</a>
+
 
 <sub>(*Disclaimer: QELM is experimental; community feedback is greatly appreciated.*)</sub>
