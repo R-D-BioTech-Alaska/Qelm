@@ -376,6 +376,13 @@ QELM/
 
 ---
 
+
+<p align="center">
+  <img src="docs/images/ctheo.jpg"/>
+</p>
+
+---
+
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
