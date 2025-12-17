@@ -1,3 +1,6 @@
+
+# This script (Qelmt.py) will soon be archived and outdated but available in the outdated folder. Any help for old and outdated scripts can still raise issues and pr's but responses will be low priority.
+
 import sys, os, json, time, logging, traceback, threading, multiprocessing, concurrent.futures, queue, subprocess
 from collections import defaultdict
 from typing import List, Dict, Tuple, Optional, Callable, Union
