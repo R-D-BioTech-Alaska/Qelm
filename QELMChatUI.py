@@ -1,26 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-QELM Conversational ChatUI 
-
-This program provides a modern chat interface for interacting with a
-Quantum-Enhanced Language Model (QELM) with additional UI options and a ChatGPT-style
-conversation layout. In this version each message is displayed as a bubble with the
-sender’s name directly above it.
-
-New UI Features:
-  - Added HF and local file extensions for llms.
-  - Ability to rename any existing conversation.
-  - Fixed token encodings.
-  - Fixed fallback methods.
-
-Update 8/9/25
-  - With Qelm 2.0 coming this is massively overhauled and will be replaced within the next couple of weeks with Qelms 2.0 release.
-  Please request pr's during this time if you are having issues, the more the better so I can know what to expect and what to fix.
-
- - B
-"""
-
 import os
 import sys
 import json
