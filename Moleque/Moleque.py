@@ -1,5 +1,7 @@
 ### IBM backend works if you have a paid account, this will not work with the free teir just fyi.
 
+### This is an outdated project. Still plan on working on it in the near future.
+
 import sys
 import os
 import time
