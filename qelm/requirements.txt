@@ -2,7 +2,7 @@ qiskit==2.1.1
 qiskit-aer==0.17.1
 numpy==2.1.3
 scipy==1.16.0
-nltk==3.9.1
+nltk==3.9.3
 tensorflow==2.19.0
 keras>=3.5.0
 psutil==7.0.0
