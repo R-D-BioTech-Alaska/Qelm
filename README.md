@@ -18,6 +18,8 @@
 **Main script (current):** `Qelm2.py` (trainer + GUI + utilities)  
 **Legacy script:** `QelmT.py` (older unified trainer/inference)
 
+*Currently not sure if I will continue this project with all the VIBE coding garbage out there*
+
 The latest versions feature:
 - Multi-block quantum transformer architecture with advanced multi-head quantum attention.
 - Novel techniques such as **sub-bit encoding** and **entropy-mixed gates** that allow more representational power per qubit.
