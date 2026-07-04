@@ -7176,7 +7176,6 @@ def compute_gradients_parallel(model: 'QuantumLanguageModel', X, Y,
         except Exception:
             pass
 
-    global _GRAD_EXECUTOR
     need_init = _GRAD_EXECUTOR is None
     executor = _get_grad_executor(
         max_workers=num_workers,
