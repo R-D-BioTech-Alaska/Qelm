@@ -13,7 +13,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) ![Python](https://img.shields.io/badge/python-3.7%2B-blue) ![Qiskit](https://img.shields.io/badge/Qiskit-required-orange) ![Qiskit Aer](https://img.shields.io/badge/Qiskit_Aer-required-green) ![GitHub Stars](https://img.shields.io/github/stars/R-D-BioTech-Alaska/QELM?style=social) [![PyPI Downloads](https://static.pepy.tech/badge/qelm)](https://pepy.tech/projects/qelm) [![PyPI](https://img.shields.io/pypi/v/qelm.svg)](https://pypi.org/project/qelm/) ![Days active](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2FR-D-BioTech-Alaska%2FQelm%2Fmain%2Fbadges%2Fdays_active.json)
 [![DOI](docs/images/doi-10.13140-RG.2.2.11844.90243-badge.svg)](https://doi.org/10.13140/RG.2.2.11844.90243)
 
-Soon Qiskit will no longer be required, but it will always be recommended and a massive part of Qelm's journey.
+***Soon Qiskit will no longer be required, but it will always be recommended and a massive part of Qelm's journey.***
 
 **QELM** (Quantum-Enhanced Language Model) combines **quantum computing** and **NLP** to create compact yet powerful language models.
 
