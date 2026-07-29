@@ -442,17 +442,6 @@ try:
 except ImportError:
     psutil = None
 
-from nltk.translate.bleu_score import sentence_bleu
-
-def cross_entropy_loss(logits, target):
-    import numpy as np
-    probs = np.exp(logits) / (np.sum(np.exp(logits)) + 1e-12)
-    t = int(target)
-    if t < 0 or t >= len(probs):
-        return float(np.log(len(probs)))
-    return -np.log(probs[t] + 1e-12)
-
-
 def _qelm_numpy_statevector_simulate(circuit):
     import numpy as _np
     import math as _math
@@ -825,31 +814,6 @@ def _compute_gradients_parallel_qelmt(model, X, Y, num_processes: int = 1, progr
                     pass
 
     return gradients
-def bleu_score(reference, hypothesis):
-    return sentence_bleu([reference], hypothesis, weights=(1.0,))
-
-def get_cpu_usage(process):
-    if psutil is None or process is None:
-        return "N/A"
-    try:
-        return f"{process.cpu_percent(interval=0.1):.1f}%"
-    except Exception:
-        return "N/A"
-
-def get_gpu_usage():   # Have not been testing this on many environments, pull request if you have issues in yours
-    if psutil is None:
-        return "N/A"
-    try:
-        import subprocess
-        result = subprocess.run(['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'], 
-                                capture_output=True, text=True)
-        if result.returncode == 0:
-            return result.stdout.strip() + '%'
-        return "N/A"
-    except Exception:
-        return "N/A (no GPU)"
-
-
 _IBM_BACKEND = None
 
 def _set_ibm_backend_from_service(service, backend_name: str):
@@ -863,6 +827,7 @@ def get_ibm_backend():
     return _IBM_BACKEND
 
 
+@dataclass
 class QELMConfig:
     qgrad: str = 'psr'
     pauli_grouping: Optional[str] = 'qwc'
@@ -1252,6 +1217,7 @@ class MeasurementScheduler:
 from dataclasses import dataclass
 
 
+@dataclass
 class LLMArtifacts:
     E: np.ndarray
     W_out: np.ndarray
@@ -1594,16 +1560,18 @@ def assemble_qelm(E_qelm: np.ndarray, bridges: List[QuantumAttentionHead], head:
         conversation_memory_capacity=int(ui_cfg.get('conversation_memory_capacity', 50) or 50),
         use_entanglement=bool(ui_cfg.get('use_entanglement', False))
     )
-    try:
-        model.embeddings = E_qelm.real.astype(np.float32)
-    except Exception:
-        pass
-    try:
-        if head.shape[0] == embed_dim and head.shape[1] == vocab_size:
-            model.W_out = head.astype(np.float32)
-            model.b_out = np.zeros(vocab_size, dtype=np.float32)
-    except Exception:
-        pass
+    model.embeddings = np.asarray(E_qelm.real, dtype=np.float32)
+    head_arr = np.asarray(head, dtype=np.float32)
+    if head_arr.shape == (vocab_size, embed_dim):
+        model.W_out = head_arr
+    elif head_arr.shape == (embed_dim, vocab_size):
+        model.W_out = head_arr.T
+    else:
+        raise ValueError(
+            f"Output head shape {head_arr.shape} does not match "
+            f"({vocab_size}, {embed_dim}) or ({embed_dim}, {vocab_size})."
+        )
+    model.b_out = np.zeros(vocab_size, dtype=np.float32)
     try:
         use_spiking = bool(ui_cfg.get("use_spiking_head", False))
         if use_spiking:
@@ -1875,6 +1843,7 @@ class QELMSpikingDecisionHead:
             mem_size = vocab_size
         self.memory = QELMSpikeMemory(vocab_size=mem_size, decay=float(long_term_decay))
 
+    @staticmethod
     def _softmax(x: np.ndarray, temperature: float = 1.0) -> np.ndarray:
         x = np.asarray(x, dtype=np.float64).reshape(-1)
         T = max(1e-6, float(temperature))
@@ -2063,11 +2032,16 @@ class BackendAdapter:
         return job.result().get_counts(tc)
 
 
-import torch
 try:
-    torch.set_num_threads(1)
+    import torch
 except Exception:
-    pass
+    torch = None
+
+if torch is not None:
+    try:
+        torch.set_num_threads(1)
+    except Exception:
+        pass
 
 
 ENABLE_UNIFIED_TOKENIZERS = os.environ.get("QELM_ENABLE_UNIFIED_TOKENIZERS", "0").strip() == "1"
@@ -2692,6 +2666,10 @@ class _QELMInternalBPETokenizer:
         self.merges = []
         self.bpe_ranks = {}
         self.id_to_token = {i: t for t, i in self.token_to_id.items()}
+        self._max_tok_len = max(
+            (len(token) for token in self.token_to_id if token not in self.special),
+            default=1,
+        )
         self.trained = True
 
     def _bpe_encode_piece(self, piece: str) -> List[str]:
@@ -2725,52 +2703,17 @@ class _QELMInternalBPETokenizer:
         return out
 
     def encode_text(self, text: str) -> List[int]:
-
-
-        if len(self.token_to_id) <= len(self.special) + 1:
-
+        if not self.trained:
             self.train([str(text)])
-
         norm = _qelm_tok_normalize(str(text))
-
         if not norm:
-
             return []
-
-
-        if len(norm) > 200000:
-
-            out: List[int] = []
-
-            for ln in norm.split('\n'):
-
-                if not ln:
-
-                    continue
-
-                stream = self._stream_from_norm(ln)
-
-                if not stream:
-
-                    continue
-
-
-                if len(stream) > 400000:
-
-                    unk = self.token_to_id.get('<UNK>', 3)
-
-                    out.extend([self.token_to_id.get(ch, unk) for ch in stream])
-
-                else:
-
-                    out.extend(self._dp_segment(stream))
-
-            return out
-
-        stream = self._stream_from_norm(norm)
-
-        return self._dp_segment(stream)
-
+        unk = self.token_to_id.get("<UNK>", 3)
+        out: List[int] = []
+        for piece in norm.split():
+            for token in self._bpe_encode_piece(piece):
+                out.append(self.token_to_id.get(token, unk))
+        return out
 
     def decode_to_text(self, ids) -> str:
         toks = [self.id_to_token.get(int(i), "<UNK>") for i in list(ids)]
@@ -2866,6 +2809,7 @@ class _QELMHybridDPTokenizer:
         self._bpe = _QELMInternalBPETokenizer(vocab_size=max(64, self.vocab_size), min_pair_freq=self.min_pair_freq)
 
 
+    @staticmethod
     def _stream_from_norm(norm_text: str) -> str:
         return norm_text.replace(" ", "").replace("\n", "")
 
@@ -3250,6 +3194,7 @@ class QELMTensorEncoder:
             outs.append(normalize_vector(v))
         return np.stack(outs, axis=0)
 
+@dataclass
 class PauliTerm:
     coeff: float
     pauli: str  
@@ -3261,6 +3206,7 @@ class QELMHamiltonian:
         if len(pauli) != self.num_qubits: raise ValueError("Pauli len != num_qubits")
         self.terms.append(PauliTerm(coeff, pauli))
 
+    @staticmethod
     def _apply_single(state: np.ndarray, op: str, q: int) -> np.ndarray:
         dim = state.shape[0]
         if op == 'I': return state
@@ -3398,6 +3344,7 @@ class QELMClusterRuntime:
 class QELMCluster:
     def __init__(self, seed: int = 7):
         self.rng = np.random.default_rng(seed)
+    @staticmethod
     def _cz_pairs(n: int): return [(i, i+1) for i in range(n-1)]
     def line_cluster_state(self, n: int) -> np.ndarray:
         if n < 1: raise ValueError("n>=1 required")
@@ -3489,7 +3436,9 @@ class QELMQSVTLayer:
         for k in range(1, self.coeffs.shape[0]):
             Ak = Ak @ self.A; P = P + self.coeffs[k]*Ak
         if isinstance(target, np.ndarray):
-            if target.shape[0] != self.dim: raise ValueError("State dimension mismatch."); return P @ target
+            if target.shape[0] != self.dim:
+                raise ValueError("State dimension mismatch.")
+            return P @ target
         psi = None
         if hasattr(target, "state"): psi = target.state.copy()
         elif hasattr(target, "cubit"): psi = target.cubit.state.copy()
@@ -3598,6 +3547,7 @@ class QELMQMoERouter:
     def __init__(self, experts: List[Callable], W: Optional[np.ndarray] = None, seed: int = 13):
         if not experts: raise ValueError("experts required")
         self.experts = experts; self.W = W; self.rng = np.random.default_rng(seed)
+    @staticmethod
     def _features(ch) -> np.ndarray:
         if hasattr(ch, "state"): p = np.abs(ch.state)**2
         elif hasattr(ch, "cubit"): p = np.abs(ch.cubit.state)**2
@@ -3605,6 +3555,7 @@ class QELMQMoERouter:
             p1 = float(ch.decode()); p = np.array([1.0-p1, p1])
         else: p = np.array([0.5,0.5])
         return np.array([p.mean(), p.max(), float(np.argmax(p))/max(1, p.size-1)], dtype=np.float64)
+    @staticmethod
     def _softmax(z: np.ndarray) -> np.ndarray:
         z = z - np.max(z); e = np.exp(z); return e/np.sum(e)
     def route(self, ch) -> int:
@@ -3946,7 +3897,7 @@ class QuantumChannelManager:
     def __init__(self):
         self.channels: List[QuantumChannel] = []
         self.available_indices: List[int] = []
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
 
     def create_channels(self,
                         num_channels: int,
@@ -5125,10 +5076,20 @@ class QuantumLayerBase:
                 state = np.zeros(int(target_len), dtype=complex)
         return state
 
+class _QELMParameterName:
+    __slots__ = ("name",)
+
+    def __init__(self, name: str):
+        self.name = name
+
+
 class QuantumParameterStore:
     def __init__(self, size: int, prefix: str = "theta"):
         self.size = size
-        self.parameters = [Parameter(f"{prefix}_{i}") for i in range(size)]
+        try:
+            self.parameters = [Parameter(f"{prefix}_{i}") for i in range(size)]
+        except Exception:
+            self.parameters = [_QELMParameterName(f"{prefix}_{i}") for i in range(size)]
         _p = str(prefix).lower() if prefix is not None else ""
         if ('gamma' in _p) or ('lambda' in _p):
             self.values = np.random.normal(1.0, 0.05, size).astype(float)
@@ -5427,8 +5388,7 @@ class QuantumTransformerBlock:
                             ent_ph_ffn[_j]  = ph01_ffn[_j] * ph01_ffn[_k]
                         amp_ffn = ent_amp_ffn
                         ph01_ffn = ent_ph_ffn
-                ffn_core  = 0.5*amp_ffn + 0.5*ph01_ffn
-                ffn_vector = np.concatenate([amp_ffn, ph01_ffn])
+                ffn_vector = 0.5*amp_ffn + 0.5*ph01_ffn
             else:
                 ffn_vector = np.array([qc.decode() for qc in allocated_qcs_ffn])
             self.qc_manager.release_channels(allocated_qcs_ffn)
@@ -5467,11 +5427,18 @@ class QuantumTransformerBlock:
         self.lambda_param.set_values(np.array([float(params[offset+1])], dtype=float))
 
     def to_dict(self) -> dict:
-        return {"attn": self.attn.to_dict(), "ffn": self.ffn.to_dict()}
+        return {
+            "attn": self.attn.to_dict(),
+            "ffn": self.ffn.to_dict(),
+            "gamma": float(self.gamma_param.get_values()[0]),
+            "lambda": float(self.lambda_param.get_values()[0]),
+        }
 
     def from_dict(self, d: dict):
         self.attn.from_dict(d["attn"])
         self.ffn.from_dict(d["ffn"])
+        self.gamma_param.set_values(np.array([float(d.get("gamma", 1.5))], dtype=float))
+        self.lambda_param.set_values(np.array([float(d.get("lambda", 1.0))], dtype=float))
 
 class QuantumContextModule:
     def __init__(self, sim_method: str = 'cpu', num_threads: int = 1, capacity: int = 50):
@@ -5629,12 +5596,18 @@ class QuantumLanguageModel:
         self.manager = manager if manager is not None else QuantumChannelManager()
         self.use_subbit_encoding = use_subbit_encoding
         self.use_amplitude_encoding = use_amplitude_encoding
+        self.use_advanced_ansatz = bool(use_advanced_ansatz)
+        self.use_data_reuploading = bool(use_data_reuploading)
         self.use_multi_encoder = use_multi_encoder
         self.num_segments = num_segments if num_segments > 0 else 1
         self.use_dynamic_decoupling = use_dynamic_decoupling
         self.use_entanglement = bool(use_entanglement)
         self.channel_type = channel_type
         self.attention_mode = attention_mode
+        self.use_grover_search = bool(use_grover_search)
+        self.fuzzy_threshold = float(fuzzy_threshold)
+        self.grover_top_k = int(grover_top_k)
+        self.grover_multi_target = bool(grover_multi_target)
         self.multi_encoder = None
         if self.use_multi_encoder:
             try:
@@ -5695,7 +5668,7 @@ class QuantumLanguageModel:
             init_range = 2 * np.pi
             for attr_name in dir(self):
                 attr = getattr(self, attr_name)
-                if isinstance(attr, np.ndarray) and (
+                if isinstance(attr, np.ndarray) and attr.size > 0 and (
                     ('theta' in attr_name.lower())
                     or ('angle' in attr_name.lower())
                     or ('rot' in attr_name.lower())
@@ -5928,6 +5901,7 @@ class QuantumLanguageModel:
         embeddings_seq = self.embeddings[input_ids]
 
         if self.pos_enc:
+            embeddings_seq = embeddings_seq.astype(np.complex128, copy=False)
             for i in range(len(embeddings_seq)):
                 embeddings_seq[i] = self.pos_enc.apply_encoding(embeddings_seq[i], i)
             embeddings_seq = np.real(embeddings_seq)
@@ -5983,7 +5957,7 @@ class QuantumLanguageModel:
             attn_out   = float(attn_layer.forward(quantum_agg, mode='out'))   if attn_layer is not None else 0.0
         except Exception:
             attn_out   = 0.0
-        combined = np.asarray(quantum_agg, dtype=np.float64) + (attn_query + attn_key + attn_value + attn_out)
+        combined = np.real(np.asarray(quantum_agg, dtype=np.complex128)) + (attn_query + attn_key + attn_value + attn_out)
         if use_residual:
             quantum_agg = normalize_vector(combined)
         else:
@@ -5998,7 +5972,17 @@ class QuantumLanguageModel:
             except Exception:
                 z2 = np.asarray(z1, dtype=np.float64)
             if use_residual:
-                quantum_agg = normalize_vector(np.asarray(quantum_agg, dtype=np.complex128) + np.asarray(z2, dtype=np.complex128))
+                q_res = np.asarray(quantum_agg, dtype=np.complex128).ravel()
+                z_res = np.asarray(z2, dtype=np.complex128).ravel()
+                if q_res.size == 2 * z_res.size:
+                    z_res = np.concatenate([z_res, z_res])
+                elif z_res.size == 2 * q_res.size:
+                    z_res = 0.5 * (z_res[:q_res.size] + z_res[q_res.size:])
+                elif z_res.size == 1 and q_res.size > 1:
+                    z_res = np.full(q_res.size, z_res[0], dtype=np.complex128)
+                elif q_res.size != z_res.size:
+                    raise ValueError("Feed-forward residual size mismatch.")
+                quantum_agg = normalize_vector(q_res + z_res)
             else:
                 quantum_agg = np.asarray(z2, dtype=np.float64)
 
@@ -6188,10 +6172,26 @@ class QuantumLanguageModel:
             "use_knowledge_embedding": self.use_knowledge_embedding,
             "knowledge_dim": self.knowledge_dim,
             "use_subbit_encoding": self.use_subbit_encoding,
-            "feature_multiplier": int(self.feature_mult)
-            ,"use_conversation_history": getattr(self, 'use_conversation_history', False)
-            ,"use_quantum_memory": getattr(self, 'use_quantum_memory', False)
-            ,"conversation_memory_capacity": int(self.context_module.capacity) if getattr(self, 'context_module', None) is not None else 0
+            "use_advanced_ansatz": self.use_advanced_ansatz,
+            "use_data_reuploading": self.use_data_reuploading,
+            "use_amplitude_encoding": self.use_amplitude_encoding,
+            "use_multi_encoder": self.use_multi_encoder,
+            "num_segments": self.num_segments,
+            "use_dynamic_decoupling": self.use_dynamic_decoupling,
+            "use_entanglement": self.use_entanglement,
+            "channel_type": self.channel_type,
+            "attention_mode": self.attention_mode,
+            "use_grover_search": self.use_grover_search,
+            "fuzzy_threshold": self.fuzzy_threshold,
+            "grover_top_k": self.grover_top_k,
+            "grover_multi_target": self.grover_multi_target,
+            "feature_multiplier": int(self.feature_mult),
+            "use_conversation_history": getattr(self, "use_conversation_history", False),
+            "use_quantum_memory": getattr(self, "use_quantum_memory", False),
+            "conversation_memory_capacity": (
+                int(self.context_module.capacity)
+                if getattr(self, "context_module", None) is not None else 0
+            ),
         }
         if self.blocks:
             model_dict["blocks"] = [block.to_dict() for block in self.blocks]
@@ -6207,8 +6207,24 @@ class QuantumLanguageModel:
         self.embeddings = np.array(d["embeddings"], dtype=np.float32)
         self.W_proj = np.array(d["W_proj"], dtype=np.float32)
         self.W_out = np.array(d["W_out"], dtype=np.float32)
-        self.feature_mult = int(d.get("feature_multiplier", 1))
+        self.b_out = np.array(d.get("b_out", np.zeros(self.vocab_size)), dtype=np.float32)
+        if self.b_out.shape != (self.vocab_size,):
+            raise ValueError("Output bias shape mismatch.")
+        self.feature_mult = int(d.get("feature_multiplier", max(1, self.W_out.shape[1] // max(1, self.embed_dim))))
         self.num_blocks = d.get("num_blocks", 1)
+        self.use_advanced_ansatz = bool(d.get("use_advanced_ansatz", False))
+        self.use_data_reuploading = bool(d.get("use_data_reuploading", False))
+        self.use_amplitude_encoding = bool(d.get("use_amplitude_encoding", False))
+        self.use_multi_encoder = bool(d.get("use_multi_encoder", False))
+        self.num_segments = int(d.get("num_segments", 1) or 1)
+        self.use_dynamic_decoupling = bool(d.get("use_dynamic_decoupling", False))
+        self.use_entanglement = bool(d.get("use_entanglement", False))
+        self.channel_type = str(d.get("channel_type", "quantum"))
+        self.attention_mode = str(d.get("attention_mode", "pairwise"))
+        self.use_grover_search = bool(d.get("use_grover_search", False))
+        self.fuzzy_threshold = float(d.get("fuzzy_threshold", 0.0))
+        self.grover_top_k = int(d.get("grover_top_k", 5))
+        self.grover_multi_target = bool(d.get("grover_multi_target", False))
         self.use_context = bool(d.get("use_context", False))
         self.use_positional_encoding = bool(d.get("use_positional_encoding", False))
         self.use_knowledge_embedding = bool(d.get("use_knowledge_embedding", False))
@@ -6234,10 +6250,13 @@ class QuantumLanguageModel:
                 block_prefix = f"layer{i+1}"
                 new_block = QuantumTransformerBlock(
                     self.embed_dim, self.num_heads, self.hidden_dim,
-                    sim_method='cpu', num_threads=1, block_prefix=block_prefix,
-                    enable_logging=False, use_advanced_ansatz=False,
-                    use_data_reuploading=False, qc_manager=self.manager,
-                    decoder=self.decoder, use_subbit_encoding=self.use_subbit_encoding
+                    sim_method=self.sim_method, num_threads=self.num_threads, block_prefix=block_prefix,
+                    enable_logging=False, use_advanced_ansatz=self.use_advanced_ansatz,
+                    use_data_reuploading=self.use_data_reuploading, qc_manager=self.manager,
+                    decoder=self.decoder, use_subbit_encoding=self.use_subbit_encoding,
+                    use_amplitude_encoding=self.use_amplitude_encoding,
+                    use_dynamic_decoupling=self.use_dynamic_decoupling,
+                    use_entanglement=self.use_entanglement
                 )
                 new_block.from_dict(block_info)
                 self.blocks.append(new_block)
@@ -6246,10 +6265,10 @@ class QuantumLanguageModel:
             self.ffn.from_dict(d["ffn"])
 
     def save_model(self, save_path: str):
-        if hasattr(self, 'token_to_id') and len(self.token_to_id) != self.vocab_size:
-            old, new = self.vocab_size, len(self.token_to_id)
-            self.vocab_size = new
-            logging.info(f"Adjusted vocab_size from {old} to {new} to match token map.")
+        if self.token_to_id and len(self.token_to_id) != self.vocab_size:
+            logging.warning(
+                f"Token mapping has {len(self.token_to_id)} entries for a {self.vocab_size}-token model."
+            )
         model_dict = self.to_dict()
         with open(save_path, 'w') as f:
             json.dump(model_dict, f)
@@ -6262,6 +6281,40 @@ class QuantumLanguageModel:
             model_dict = json.load(f)
         if "version" not in model_dict or model_dict["version"] not in ("4.0","4.1"):
             raise ValueError("Unsupported model version.")
+
+        sim_method = getattr(self, "sim_method", "cpu")
+        num_threads = getattr(self, "num_threads", 1)
+        self.__init__(
+            int(model_dict["vocab_size"]),
+            int(model_dict["embed_dim"]),
+            int(model_dict["num_heads"]),
+            int(model_dict["hidden_dim"]),
+            sim_method=sim_method,
+            num_threads=num_threads,
+            enable_logging=False,
+            use_advanced_ansatz=bool(model_dict.get("use_advanced_ansatz", False)),
+            use_data_reuploading=bool(model_dict.get("use_data_reuploading", False)),
+            num_blocks=int(model_dict.get("num_blocks", 1)),
+            use_context=bool(model_dict.get("use_context", False)),
+            use_positional_encoding=bool(model_dict.get("use_positional_encoding", False)),
+            use_knowledge_embedding=bool(model_dict.get("use_knowledge_embedding", False)),
+            knowledge_dim=int(model_dict.get("knowledge_dim", 0) or 0),
+            use_subbit_encoding=bool(model_dict.get("use_subbit_encoding", False)),
+            attention_mode=str(model_dict.get("attention_mode", "pairwise")),
+            use_amplitude_encoding=bool(model_dict.get("use_amplitude_encoding", False)),
+            use_multi_encoder=bool(model_dict.get("use_multi_encoder", False)),
+            num_segments=int(model_dict.get("num_segments", 1) or 1),
+            use_dynamic_decoupling=bool(model_dict.get("use_dynamic_decoupling", False)),
+            channel_type=str(model_dict.get("channel_type", "quantum")),
+            use_grover_search=bool(model_dict.get("use_grover_search", False)),
+            fuzzy_threshold=float(model_dict.get("fuzzy_threshold", 0.0)),
+            grover_top_k=int(model_dict.get("grover_top_k", 5)),
+            grover_multi_target=bool(model_dict.get("grover_multi_target", False)),
+            use_conversation_history=bool(model_dict.get("use_conversation_history", False)),
+            use_quantum_memory=bool(model_dict.get("use_quantum_memory", False)),
+            conversation_memory_capacity=int(model_dict.get("conversation_memory_capacity", 50) or 50),
+            use_entanglement=bool(model_dict.get("use_entanglement", False)),
+        )
         self.from_dict(model_dict)
 
     def shift_parameter(self, param_index: int, shift: float):
@@ -6285,8 +6338,15 @@ class QuantumLanguageModel:
         base, _ = os.path.splitext(load_path)
         token_map_path = f"{base}_token_map.json"
         with open(token_map_path, 'r') as f:
-            self.token_to_id = json.load(f)
-        self.id_to_token = {int(idx): token for token, idx in self.token_to_id.items()}
+            token_map = json.load(f)
+        if not isinstance(token_map, dict):
+            raise ValueError("Token mapping file is invalid.")
+        self.token_to_id = {str(token): int(idx) for token, idx in token_map.items()}
+        self.id_to_token = {idx: token for token, idx in self.token_to_id.items()}
+        if len(self.id_to_token) != len(self.token_to_id):
+            raise ValueError("Token mapping contains duplicate ids.")
+        if any(idx < 0 or idx >= self.vocab_size for idx in self.id_to_token):
+            raise ValueError("Token mapping contains an out-of-range id.")
 
 def quantum_data_augmentation(input_data: np.ndarray) -> np.ndarray:
     noise = 0.001 * np.random.randn(*input_data.shape)
@@ -6342,7 +6402,7 @@ class MultiQuantumEncoder:
             logging.info(f"MultiQuantumEncoder initialized: embed_dim={embed_dim}, num_segments={num_segments}, segment_length={self.segment_length}")
 
     def encode(self, embeddings: Union[np.ndarray, List[np.ndarray]]) -> np.ndarray:
-        arr = np.asarray(embeddings, dtype=np.float32)
+        arr = np.real(np.asarray(embeddings, dtype=np.complex128)).astype(np.float32, copy=False)
         single_input = (arr.ndim == 1)
         if single_input:
             arr = arr.reshape(1, -1)
@@ -7791,9 +7851,13 @@ def train_model(model: 'QuantumLanguageModel', X, Y, epochs: int = 10, lr: float
 
 
             if not np.all(np.isfinite(grad)):
-                print("[QELM] non-finite grad detected → zeroing this step", flush=True)
-                grad = np.zeros_like(grad, dtype=np.float64)
-                grad = _compute_gradients_serial(model, model.get_all_parameters(), all_idx, shift, model.get_quantum_param_count() if hasattr(model, "get_quantum_param_count") else 0)
+                print("[QELM] non-finite grad detected; retrying serially", flush=True)
+                params_now = model.get_all_parameters()
+                all_idx = range(len(params_now))
+                grad = _compute_gradients_serial(
+                    model, params_now, all_idx, np.pi / 2.0,
+                    model.get_quantum_param_count() if hasattr(model, "get_quantum_param_count") else 0
+                )
             if log_queue is not None:
                 try:
                     gvec = np.asarray(grad, dtype=float).ravel()
@@ -8126,7 +8190,7 @@ def _qelm_training_worker_main(args: dict):
             if not hf_ds:
                 raise ValueError("Missing hf_dataset_name for dataset_source='hf'")
             _log(f"INFO:Worker loading HF dataset: {hf_ds} | {hf_cfg or 'default'} | split={hf_split}")
-            res = load_dataset_with_tokenization_streaming_memmap_hf(
+            res = load_hf_dataset(
                 dataset_name=hf_ds,
                 config_name=hf_cfg,
                 split=hf_split,
@@ -8150,7 +8214,10 @@ def _qelm_training_worker_main(args: dict):
             if not dataset_path:
                 raise ValueError("Missing dataset_path for local dataset_source")
             _log(f"INFO:Worker loading local dataset from: {dataset_path}")
-            X, Y, token_to_id = load_dataset(dataset_path, vocab_size, return_tokenizer=False)
+            res = load_real_dataset(
+                dataset_path, vocab_size, use_unified=True, return_tokenizer=True
+            )
+            X, Y, token_to_id = res[0], res[1], res[2]
 
         try:
             if isinstance(token_to_id, dict) and token_to_id:
@@ -8224,17 +8291,18 @@ def softmax(x: np.ndarray) -> np.ndarray:
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
+@dataclass
 class SamplerConfig:
     max_length: int = 50
-    temperature: float = 1.0        
-    top_p: float = 0.9               
-    top_k: Optional[int] = None       
-    min_p: Optional[float] = None     
-    typical_p: Optional[float] = None 
-    repetition_penalty: float = 1.1    
-    presence_penalty: float = 0.0      
-    frequency_penalty: float = 0.0    
-    no_repeat_ngram: int = 0           
+    temperature: float = 1.0
+    top_p: float = 0.9
+    top_k: Optional[int] = None
+    min_p: Optional[float] = None
+    typical_p: Optional[float] = None
+    repetition_penalty: float = 1.1
+    presence_penalty: float = 0.0
+    frequency_penalty: float = 0.0
+    no_repeat_ngram: int = 0
     context_window: int = 16
     min_length: int = 0
     greedy: bool = False
@@ -8242,8 +8310,68 @@ class SamplerConfig:
     echo_prompt: bool = False
     stop_tokens: Optional[List[int]] = None
     ban_tokens: Optional[List[int]] = None
-    allow_tokens: Optional[List[int]] = None  
-    logit_bias: Optional[Dict[int, float]] = None  
+    allow_tokens: Optional[List[int]] = None
+    logit_bias: Optional[Dict[int, float]] = None
+
+
+def _softmax_stable(x: np.ndarray) -> np.ndarray:
+    x = np.asarray(x, dtype=np.float64).reshape(-1)
+    if x.size == 0:
+        raise ValueError("Model returned empty logits.")
+    x = np.nan_to_num(x, nan=-1e9, posinf=1e9, neginf=-1e9)
+    x -= np.max(x)
+    ex = np.exp(x)
+    total = ex.sum()
+    return ex / (total if total > 0 else 1.0)
+
+
+def _apply_top_k(probs: np.ndarray, k: Optional[int]) -> np.ndarray:
+    if k is None or k <= 0 or k >= probs.size:
+        return probs
+    keep = np.argpartition(probs, -k)[-k:]
+    mask = np.ones_like(probs, dtype=bool)
+    mask[keep] = False
+    probs[mask] = 0.0
+    total = probs.sum()
+    return probs / (total if total > 0 else 1.0)
+
+
+def _apply_top_p(probs: np.ndarray, p: float) -> np.ndarray:
+    if not (0.0 < p < 1.0):
+        return probs
+    order = np.argsort(probs)[::-1]
+    csum = np.cumsum(probs[order])
+    cut = int(np.searchsorted(csum, p, side="left")) + 1
+    keep = order[:max(1, cut)]
+    mask = np.ones_like(probs, dtype=bool)
+    mask[keep] = False
+    probs[mask] = 0.0
+    total = probs.sum()
+    return probs / (total if total > 0 else 1.0)
+
+
+def _apply_typical_sampling(probs: np.ndarray, typical_p: float) -> np.ndarray:
+    if not (0.0 < typical_p < 1.0):
+        return probs
+    info = -np.log(np.clip(probs, 1e-12, 1.0))
+    entropy = float(np.sum(probs * info))
+    order = np.argsort(np.abs(info - entropy))
+    csum = np.cumsum(probs[order])
+    cut = int(np.searchsorted(csum, typical_p, side="left")) + 1
+    keep = order[:max(1, cut)]
+    mask = np.ones_like(probs, dtype=bool)
+    mask[keep] = False
+    probs[mask] = 0.0
+    total = probs.sum()
+    return probs / (total if total > 0 else 1.0)
+
+
+def _apply_min_p(probs: np.ndarray, min_p: Optional[float]) -> np.ndarray:
+    if min_p is None or not (0.0 < min_p < 1.0):
+        return probs
+    probs[probs < float(np.max(probs)) * min_p] = 0.0
+    total = probs.sum()
+    return probs / (total if total > 0 else 1.0)
 
 
 def run_inference(
@@ -8314,6 +8442,9 @@ def run_inference(
         if start_id is not None and (not generated or generated[0] != start_id):
             generated = [start_id] + generated
 
+    if not generated:
+        generated = [token_to_id.get("<UNK>", 0)]
+
     pad_id  = token_to_id.get("<PAD>", None)
     start_id= token_to_id.get("<START>", None)
     end_id  = token_to_id.get("<END>", None)
@@ -8349,7 +8480,8 @@ def run_inference(
             counts = Counter(generated)
             for tid, c in counts.items():
                 if 0 <= tid < vocab and c > 0:
-                    logits[tid] /= (cfg.repetition_penalty ** c)
+                    penalty = cfg.repetition_penalty ** c
+                    logits[tid] = logits[tid] * penalty if logits[tid] < 0 else logits[tid] / penalty
         if cfg.presence_penalty > 0 or cfg.frequency_penalty > 0:
             counts = Counter(generated)
             for tid, c in counts.items():
@@ -8379,6 +8511,9 @@ def run_inference(
             if 0 <= tid < vocab:
                 logits[tid] = -1e9
 
+        if not np.any(logits > -1e8):
+            raise ValueError("No tokens remain after inference filters.")
+
         temp = max(1e-6, float(cfg.temperature))
         probs = _softmax_stable(logits / temp)
         probs = _apply_top_k(probs, cfg.top_k)
@@ -8393,9 +8528,11 @@ def run_inference(
                 if 0 <= tid < vocab:
                     probs[tid] = 0.0
             s = probs.sum()
-            probs = probs / (s if s > 0 else 1.0)
+            if s <= 0:
+                raise ValueError("No tokens remain after inference filters.")
+            probs = probs / s
 
-        next_id = int(np.argmax(probs)) if cfg.greedy else int(np.random.choice(len(probs), p=probs))
+        next_id = int(np.argmax(probs)) if cfg.greedy else int(rng.choice(len(probs), p=probs))
         generated.append(next_id)
 
         if cfg.no_repeat_ngram >= 2:
@@ -8417,13 +8554,13 @@ def run_inference(
         tokens = [id_to_token.get(t, "<UNK>") for t in decode_ids]
     else:
         tokens = [id_to_token.get(t, "<UNK>") for t in decode_ids]
-        tokens = [t for t in tokens if t not in ("<PAD>", "<START>")]
-        if tokens and tokens[-1] == "<END>":
+        tokens = [t for t in tokens if t not in ("<PAD>", "<START>", "<BOS>")]
+        if tokens and tokens[-1] in ("<END>", "<EOS>"):
             tokens = tokens[:-1]
         response = " ".join(tokens)
 
     if log_callback:
-        log_callback(f"\\n\\nGenerated Response:\\n{response}\\n\\n")
+        log_callback(f"\n\nGenerated Response:\n{response}\n\n")
 
     return tokens, response
 
@@ -8881,10 +9018,6 @@ class QELM_GUI:
             self.log_queue = queue.Queue()
             self.master.after(100, self.process_log_queue)
             self.master.protocol("WM_DELETE_WINDOW", self.on_closing)
-            try:
-                self.QELM_register_gui_help(self)
-            except Exception:
-                pass
             self.error_log_path = None
             self.error_logger = logging.getLogger('error_logger')
             self.error_logger.setLevel(logging.ERROR)
@@ -10618,10 +10751,11 @@ class QELM_GUI:
             save_path = filedialog.asksaveasfilename(title="Save Model", defaultextension=".qelm",
                                                      filetypes=[("QELM Files", "*.qelm"), ("All Files", "*.*")])
             if save_path:
-                self.model.token_to_id = self.token_to_id
-                self.model.save_model_and_tokens(save_path)
                 if len(self.token_to_id) != self.model.vocab_size:
                     raise ValueError(f"Token mapping size mismatch: {len(self.token_to_id)} vs {self.model.vocab_size}")
+                self.model.token_to_id = self.token_to_id
+                self.model.id_to_token = self.id_to_token
+                self.model.save_model_and_tokens(save_path)
                 messagebox.showinfo("Model Saved", f"Model saved to {save_path}")
         except Exception:
             err = f"Save model error:\n{traceback.format_exc()}"
@@ -10710,7 +10844,26 @@ class QELM_GUI:
                 self.id_to_token = self.model.id_to_token
                 if len(self.token_to_id) != self.model.vocab_size:
                     raise ValueError(f"Token mapping size mismatch: {len(self.token_to_id)} vs {self.model.vocab_size}")
-                self.log_token_map(f"Loaded token mappings from {load_path}_token_map.json\n")
+
+                self.vocab_size = self.model.vocab_size
+                self.embed_dim = self.model.embed_dim
+                self.num_heads = self.model.num_heads
+                self.hidden_dim = self.model.hidden_dim
+                self.num_blocks = self.model.num_blocks
+                for entry, value in (
+                    (self.vocab_size_entry, self.vocab_size),
+                    (self.embed_dim_entry, self.embed_dim),
+                    (self.num_heads_entry, self.num_heads),
+                    (self.hidden_dim_entry, self.hidden_dim),
+                ):
+                    entry.delete(0, tk.END)
+                    entry.insert(0, str(value))
+                self.num_blocks_var.set(self.num_blocks)
+                self.use_subbit_encoding_var.set(self.model.use_subbit_encoding)
+                self.optimizer = AdamOptimizer(lr=float(self.lr_entry.get()))
+
+                base, _ = os.path.splitext(load_path)
+                self.log_token_map(f"Loaded token mappings from {base}_token_map.json\n")
                 self.display_token_map()
                 messagebox.showinfo("Model Loaded", f"Model loaded from {load_path}")
         except Exception:
@@ -11144,33 +11297,6 @@ def main():
         return
 
 
-if __name__ == "__main__":
-    _install_crash_logger()
-    import faulthandler, traceback, sys
-    try:
-        faulthandler.enable()
-    except Exception:
-        pass
-    try:
-        main()
-    except NameError:
-        try:
-            run()
-        except Exception as e:
-            print("[QELM] run() failed:", e, file=sys.stderr)
-            traceback.print_exc()
-            try:
-                input("Press Enter to exit")
-            except Exception:
-                pass
-    except Exception as e:
-        print("[QELM] Unhandled exception:", e, file=sys.stderr)
-        traceback.print_exc()
-        try:
-            input("Press Enter to exit")
-        except Exception:
-            pass
-
 
 def compute_gradients_parallel_psr(model, X, Y, num_threads: int = 1):
     import platform
@@ -11259,76 +11385,7 @@ def compute_gradients_parallel_psr(model, X, Y, num_threads: int = 1):
         pass
     return mean_grads
 
-def compute_gradients_spsa(
-    model,
-    X,
-    Y,
-    num_threads: int = 1,
-    a: float = 0.01,
-    c: float = 0.1,
-    noise_std: float = 1e-5,
-    num_samples: int = 1,
-    progress_callback=None,
-    **_kwargs,
-) -> np.ndarray:
-    import platform
-    import numpy as _np
-    import concurrent.futures as _cf
-    base_params = _np.asarray(model.get_all_parameters(), dtype=float).copy()
-    n_params = int(base_params.shape[0])
-    if n_params == 0:
-        return _np.zeros(0, dtype=float)
-    ctx = getattr(model, "context_size", 1)
-    def _pad_seq(seq):
-        seq = list(map(int, seq))
-        if ctx is None or ctx <= 0:
-            return seq
-        return seq[-ctx:] if len(seq) >= ctx else [0] * (ctx - len(seq)) + seq
-    Xp = [_pad_seq(x) for x in X]
-    Yp = [int(y) for y in Y]
-    n_samples = len(Xp)
-    def _cross_entropy_loss(logits, target):
-        probs = _np.exp(logits) / (_np.sum(_np.exp(logits)) + 1e-12)
-        t = int(target)
-        if t < 0 or t >= len(probs):
-            return float(_np.log(len(probs)))
-        return -_np.log(probs[t] + 1e-12)
-    def _loss_for_params(params, seq, y):
-        with model_lock:
-            model.set_all_parameters(params)
-            logits = model.forward(seq)
-        return float(_cross_entropy_loss(logits, y))
-    all_grads = _np.zeros((n_samples, n_params), dtype=float)
-    is_windows = platform.system() == 'Windows'
-    max_workers = 1 if is_windows else max(1, int(num_threads))
-    def _sample_grad(i: int):
-        seq = Xp[i]
-        y = Yp[i]
-        delta = 2 * _np.random.randint(0, 2, size=n_params) - 1
-        pert_plus = base_params + float(c) * delta
-        pert_minus = base_params - float(c) * delta
-        loss_plus = _loss_for_params(pert_plus, seq, y)
-        loss_minus = _loss_for_params(pert_minus, seq, y)
-        grads = (loss_plus - loss_minus) / (2.0 * float(c) * delta + 1e-12)
-        return (i, grads)
-    with _cf.ThreadPoolExecutor(max_workers=max_workers) as _ex:
-        futures = [_ex.submit(_sample_grad, i) for i in range(n_samples)]
-        for fut in _cf.as_completed(futures):
-            i_ret, gvec = fut.result()
-            all_grads[i_ret] = gvec
-    mean_grads = _np.mean(all_grads, axis=0) * float(a)
-    mean_grads += _np.random.normal(0.0, float(noise_std), n_params)
-    try:
-        grad_norm = float(_np.linalg.norm(mean_grads))
-    except Exception:
-        grad_norm = 0.0
-    if grad_norm > 10.0:
-        mean_grads /= (grad_norm + 1e-12)
-    try:
-        idxs = _np.linspace(0, n_params - 1, min(10, n_params), dtype=int)
-        for idx in idxs:
-            print(f"SPSA Param {int(idx)} Grad Magnitude: {float(abs(mean_grads[int(idx)])):.6f}")
-        print("SPSA Norm:", grad_norm)
-    except Exception:
-        pass
-    return mean_grads
+
+if __name__ == "__main__":
+    _install_crash_logger()
+    main()

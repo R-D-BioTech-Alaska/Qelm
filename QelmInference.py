@@ -26,7 +26,9 @@ class SamplerConfig:
         self.logit_bias         = dict(kw.get("logit_bias", {}) or {})
 
 def _softmax_stable(x: np.ndarray) -> np.ndarray:
-    x = x.astype(np.float64)
+    x = np.asarray(x, dtype=np.float64).reshape(-1)
+    if x.size == 0: raise ValueError("Model returned empty logits.")
+    x = np.nan_to_num(x, nan=-1e9, posinf=1e9, neginf=-1e9)
     x -= np.max(x)
     ex = np.exp(x)
     s = ex.sum()
@@ -43,7 +45,7 @@ def _apply_top_p(probs: np.ndarray, p: float):
     if not (0.0 < p < 1.0): return probs
     order = np.argsort(probs)[::-1]
     csum = np.cumsum(probs[order])
-    cut = np.searchsorted(csum, p, side="right")
+    cut = int(np.searchsorted(csum, p, side="left")) + 1
     keep = order[:max(1, cut)]
     mask = np.ones_like(probs, dtype=bool); mask[keep] = False
     probs[mask] = 0.0; s = probs.sum()
@@ -56,7 +58,7 @@ def _apply_typical(probs: np.ndarray, typical_p: float):
     dist = np.abs(info - H)
     order = np.argsort(dist)
     csum = np.cumsum(probs[order])
-    cut = np.searchsorted(csum, typical_p, side="right")
+    cut = int(np.searchsorted(csum, typical_p, side="left")) + 1
     keep = order[:max(1, cut)]
     mask = np.ones_like(probs, dtype=bool); mask[keep] = False
     probs[mask] = 0.0; s = probs.sum()
@@ -139,6 +141,9 @@ def run_inference(
         if start_id is not None and (not generated or generated[0] != start_id):
             generated = [start_id] + generated
 
+    if not generated:
+        generated = [token_to_id.get("<UNK>", 0)]
+
     pad_id  = token_to_id.get("<PAD>", None)
     start_id= token_to_id.get("<START>", None)
     end_id  = token_to_id.get("<END>", None)
@@ -162,7 +167,8 @@ def run_inference(
             counts = Counter(generated)
             for tid, c in counts.items():
                 if 0 <= tid < vocab and c > 0:
-                    logits[tid] /= (cfg.repetition_penalty ** c)
+                    penalty = cfg.repetition_penalty ** c
+                    logits[tid] = logits[tid] * penalty if logits[tid] < 0 else logits[tid] / penalty
         _presence_frequency_penalty(logits, generated, cfg.presence_penalty, cfg.frequency_penalty)
         if cfg.logit_bias:
             for tid, bias in cfg.logit_bias.items():
@@ -182,6 +188,9 @@ def run_inference(
         for tid in local_ban:
             if 0 <= tid < vocab: logits[tid] = -1e9
 
+        if not np.any(logits > -1e8):
+            raise ValueError("No tokens remain after inference filters.")
+
         temp = max(1e-6, float(cfg.temperature))
         probs = _softmax_stable(logits / temp)
         probs = _apply_top_k(probs, cfg.top_k)
@@ -194,9 +203,12 @@ def run_inference(
             probs = np.ones(vocab, dtype=np.float64)
             for tid in local_ban:
                 if 0 <= tid < vocab: probs[tid] = 0.0
-            s = probs.sum(); probs = probs / (s if s > 0 else 1.0)
+            s = probs.sum()
+            if s <= 0:
+                raise ValueError("No tokens remain after inference filters.")
+            probs = probs / s
 
-        next_id = int(np.argmax(probs)) if cfg.greedy else int(np.random.choice(len(probs), p=probs))
+        next_id = int(np.argmax(probs)) if cfg.greedy else int(rng.choice(len(probs), p=probs))
         generated.append(next_id)
         if cfg.no_repeat_ngram >= 2:
             n = cfg.no_repeat_ngram
@@ -213,8 +225,8 @@ def run_inference(
         response = tokenizer.decode_to_text(decode_ids)
     else:
         tokens = [id_to_token.get(t, "<UNK>") for t in decode_ids]
-        tokens = [t for t in tokens if t not in ("<PAD>","<START>")]
-        if tokens and tokens[-1] == "<END>": tokens = tokens[:-1]
+        tokens = [t for t in tokens if t not in ("<PAD>","<START>","<BOS>")]
+        if tokens and tokens[-1] in ("<END>", "<EOS>"): tokens = tokens[:-1]
         response = " ".join(tokens)
 
     if log_callback:

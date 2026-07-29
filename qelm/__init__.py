@@ -1,2 +1,6 @@
-from importlib.metadata import version
-__version__ = version("qelm", default="0.0.0.dev0")
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("qelm")
+except PackageNotFoundError:
+    __version__ = "0.1.4"

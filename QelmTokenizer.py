@@ -4,10 +4,12 @@ from typing import List, Tuple, Dict, Optional
 from collections import Counter, defaultdict
 
 def _bin_centers(n_bins: int, lo: float, hi: float):
+    if n_bins < 1 or hi <= lo: raise ValueError("Invalid bin settings.")
     width = (hi - lo) / float(n_bins)
     return [lo + (i + 0.5) * width for i in range(n_bins)]
 
 def _value_to_bin(x: float, lo: float, hi: float, n_bins: int) -> int:
+    if n_bins < 1 or hi <= lo: raise ValueError("Invalid bin settings.")
     if x < lo: x = lo
     if x > hi: x = hi
     pos = (x - lo) / (hi - lo) * n_bins
@@ -31,6 +33,7 @@ class QELMUnifiedTokenizer:
         self.phi_range = (float(phi_range[0]), float(phi_range[1]))
         self.min_pair_freq = int(min_pair_freq)
         self.special_tokens = special_tokens or ["<PAD>", "<START>", "<END>", "<UNK>", "<QUBIT>", "<TEXT>"]
+        if self.vocab_size < len(self.special_tokens): raise ValueError("vocab_size is too small for the special tokens.")
         self.token_to_id: Dict[str, int] = {}
         self.id_to_token: Dict[int, str] = {}
         self.merges: List[Tuple[str, str]] = []
@@ -72,16 +75,17 @@ class QELMUnifiedTokenizer:
             self._add(tok)
 
     def _add(self, tok: str):
-        if tok in self.token_to_id: return
+        if tok in self.token_to_id or len(self.token_to_id) >= self.vocab_size: return False
         idx = len(self.token_to_id)
         self.token_to_id[tok] = idx
         self.id_to_token[idx] = tok
+        return True
 
     def _seed_from(self, sequences: List[List[str]]):
         self._init_vocab()
-        seen = set()
-        for s in sequences: seen.update(s)
-        for t in sorted(seen): self._add(t)
+        counts = Counter(t for row in sequences for t in row if t not in self.token_to_id)
+        for t, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0])):
+            if not self._add(t): break
 
     def _pair_counts_with_trigram_boost(self, sequences: List[List[str]]):
         c = Counter()
@@ -158,7 +162,7 @@ class QELMUnifiedTokenizer:
 
     def decode_to_text(self, ids: List[int]) -> str:
         toks = [self.id_to_token.get(int(i), "<UNK>") for i in ids]
-        toks = [t for t in toks if t not in ("<TEXT>", "<QUBIT>") and not self._qubit_pat.match(t)]
+        toks = [t for t in toks if t not in ("<PAD>", "<START>", "<END>", "<TEXT>", "<QUBIT>") and not self._qubit_pat.match(t)]
         out = []
         for i, t in enumerate(toks):
             if i>0 and t.isalnum() and out and out[-1].isalnum():
@@ -186,6 +190,9 @@ class QELMUnifiedTokenizer:
     def get_vocab(self) -> Dict[str, int]:
         return dict(self.token_to_id)
 
+    def get_token_to_id_map(self) -> Dict[str, int]:
+        return dict(self.token_to_id)
+
     def get_id_to_token_map(self) -> Dict[int, str]:
         return {v:k for k,v in self.token_to_id.items()}
 
@@ -205,6 +212,7 @@ class QELMUnifiedTokenizer:
                 "trained": self.trained
             }, f, ensure_ascii=False, indent=2)
 
+    @classmethod
     def load(cls, path: str) -> "QELMUnifiedTokenizer":
         with open(path, "r", encoding="utf-8") as f:
             d = json.load(f)
@@ -219,6 +227,13 @@ class QELMUnifiedTokenizer:
         )
         obj.token_to_id = {str(k): int(v) for k,v in d.get("token_to_id", {}).items()}
         obj.id_to_token = {int(k): str(v) for k,v in d.get("id_to_token", {}).items()}
+        expected_id_map = {v:k for k,v in obj.token_to_id.items()}
+        if not obj.id_to_token:
+            obj.id_to_token = expected_id_map
+        if obj.id_to_token != expected_id_map:
+            raise ValueError("Tokenizer maps do not match.")
+        if any(idx < 0 or idx >= obj.vocab_size for idx in obj.id_to_token):
+            raise ValueError("Tokenizer id is out of range.")
         obj.merges = [tuple(x) for x in d.get("merges", [])]
         obj.trained = bool(d.get("trained", False))
         return obj

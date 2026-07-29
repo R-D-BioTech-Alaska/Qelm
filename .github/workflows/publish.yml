@@ -1,14 +1,18 @@
 name: publish-qelm
+
 on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   build-and-publish:
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
