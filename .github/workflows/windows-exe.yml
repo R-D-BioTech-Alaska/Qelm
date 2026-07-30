@@ -35,6 +35,9 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force build | Out-Null
           python -m nltk.downloader -d build/nltk_data punkt punkt_tab stopwords
+          Remove-Item build/nltk_data/tokenizers/punkt.zip -Force -ErrorAction SilentlyContinue
+          Remove-Item build/nltk_data/tokenizers/punkt_tab.zip -Force -ErrorAction SilentlyContinue
+          Remove-Item build/nltk_data/corpora/stopwords.zip -Force -ErrorAction SilentlyContinue
           python -c "from PIL import Image; im=Image.open('docs/images/qelm_logo_small.png').convert('RGBA'); im.save('build/qelm.ico', sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])"
           choco install graphviz -y --no-progress
           $dot = Get-ChildItem 'C:\Program Files\Graphviz' -Recurse -Filter dot.exe -ErrorAction SilentlyContinue | Select-Object -First 1
