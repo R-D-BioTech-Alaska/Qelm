@@ -3,15 +3,29 @@ name: Windows single-file executable
 on:
   pull_request:
     branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      sign_release:
+        description: Sign and timestamp QELM.exe with Microsoft Artifact Signing
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   build:
     runs-on: windows-latest
     timeout-minutes: 120
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARTIFACT_SIGNING_ENDPOINT: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+      ARTIFACT_SIGNING_ACCOUNT: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+      ARTIFACT_SIGNING_PROFILE: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
 
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +71,7 @@ jobs:
         shell: pwsh
         run: pyinstaller --noconfirm --clean QELM.spec
 
-      - name: Verify single-file output
+      - name: Verify single-file output and Windows identity
         shell: pwsh
         run: |
           $files = @(Get-ChildItem dist -File)
@@ -66,7 +80,67 @@ jobs:
           if ($files.Count -ne 1 -or $files[0].Name -ne 'QELM.exe') {
             throw "Expected only dist/QELM.exe, found: $($files.Name -join ', ')"
           }
-          Get-Item dist/QELM.exe | Format-List Name,Length,FullName
+          $item = Get-Item dist/QELM.exe
+          $info = $item.VersionInfo
+          if ($info.CompanyName -ne 'R&D BioTech Alaska Inc.') { throw "Missing or incorrect CompanyName: $($info.CompanyName)" }
+          if ($info.ProductName -ne 'QELM') { throw "Missing or incorrect ProductName: $($info.ProductName)" }
+          if ($info.OriginalFilename -ne 'QELM.exe') { throw "Missing or incorrect OriginalFilename: $($info.OriginalFilename)" }
+          $item | Format-List Name,Length,FullName
+          $info | Format-List CompanyName,FileDescription,FileVersion,ProductName,ProductVersion,OriginalFilename
+
+      - name: Require release signing configuration
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.sign_release }}
+        shell: pwsh
+        run: |
+          $required = @(
+            'AZURE_CLIENT_ID',
+            'AZURE_TENANT_ID',
+            'AZURE_SUBSCRIPTION_ID',
+            'ARTIFACT_SIGNING_ENDPOINT',
+            'ARTIFACT_SIGNING_ACCOUNT',
+            'ARTIFACT_SIGNING_PROFILE'
+          )
+          $missing = @($required | Where-Object { [string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($_)) })
+          if ($missing.Count -gt 0) {
+            throw "Signed release requested, but these GitHub secrets or variables are missing: $($missing -join ', ')"
+          }
+
+      - name: Sign in to Azure with GitHub OIDC
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.sign_release }}
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Authenticode sign and timestamp QELM.exe
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.sign_release }}
+        uses: azure/artifact-signing-action@v2
+        with:
+          endpoint: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          files: ${{ github.workspace }}\dist\QELM.exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+          description: QELM - Quantum Enhanced Language Model
+          description-url: https://github.com/R-D-BioTech-Alaska/Qelm
+
+      - name: Verify Authenticode signature
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.sign_release }}
+        shell: pwsh
+        run: |
+          $signature = Get-AuthenticodeSignature dist/QELM.exe
+          $signature | Format-List Status,StatusMessage,SignerCertificate,TimeStamperCertificate
+          if ($signature.Status -ne 'Valid') { throw "QELM.exe signature is not valid: $($signature.StatusMessage)" }
+          $signTool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse -Filter signtool.exe -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '\\x64\\signtool\.exe$' } |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1
+          if (-not $signTool) { throw 'SignTool was not found on the Windows runner.' }
+          & $signTool.FullName verify /pa /all /v dist/QELM.exe
+          if ($LASTEXITCODE -ne 0) { throw "SignTool verification failed with exit code $LASTEXITCODE" }
 
       - name: Test executable dataset preparation
         shell: pwsh
@@ -103,6 +177,29 @@ jobs:
           if (-not (Test-Path build/qelm_exe_smoke.ok)) { throw 'QELM did not finish its startup test' }
           Remove-Item build/qelm_exe_smoke.ok -Force
 
+      - name: Scan executable with Microsoft Defender
+        shell: pwsh
+        run: |
+          $platformRoot = Join-Path $env:ProgramData 'Microsoft\Windows Defender\Platform'
+          $mpCmd = $null
+          if (Test-Path $platformRoot) {
+            $mpCmd = Get-ChildItem $platformRoot -Recurse -Filter MpCmdRun.exe -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending |
+              Select-Object -First 1
+          }
+          if (-not $mpCmd) {
+            $fallback = Join-Path $env:ProgramFiles 'Windows Defender\MpCmdRun.exe'
+            if (Test-Path $fallback) { $mpCmd = Get-Item $fallback }
+          }
+          if (-not $mpCmd) {
+            Write-Warning 'Microsoft Defender command-line scanner is unavailable on this runner.'
+          } else {
+            & $mpCmd.FullName -SignatureUpdate
+            & $mpCmd.FullName -Scan -ScanType 3 -File (Resolve-Path dist/QELM.exe).Path -DisableRemediation
+            if ($LASTEXITCODE -eq 2) { throw 'Microsoft Defender detected QELM.exe as a threat.' }
+            if ($LASTEXITCODE -ne 0) { Write-Warning "Microsoft Defender scan returned non-detection error code $LASTEXITCODE." }
+          }
+
       - name: Checksum executable
         shell: pwsh
         run: |
@@ -110,7 +207,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: QELM-Single-EXE-Windows-x64
+          name: ${{ github.event_name == 'workflow_dispatch' && inputs.sign_release && 'QELM-Signed-Windows-x64' || 'QELM-Unsigned-CI-Windows-x64' }}
           path: dist/QELM.exe
           if-no-files-found: error
           retention-days: 30
