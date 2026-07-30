@@ -19,6 +19,11 @@ def _prepare_runtime():
     os.environ.setdefault('NLTK_DATA', os.path.join(root, 'nltk_data'))
     os.environ.setdefault('MPLCONFIGDIR', os.path.join(root, '.qelm_cache', 'matplotlib'))
 
+    if sys.stdout is None:
+        sys.stdout = open(os.devnull, 'w', encoding='utf-8')
+    if sys.stderr is None:
+        sys.stderr = open(os.devnull, 'w', encoding='utf-8')
+
     graphviz_bin = os.path.join(root, 'graphviz', 'bin')
     if os.path.isdir(graphviz_bin):
         os.environ['PATH'] = graphviz_bin + os.pathsep + os.environ.get('PATH', '')
