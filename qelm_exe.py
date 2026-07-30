@@ -24,12 +24,19 @@ def _prepare_runtime():
     if sys.stderr is None:
         sys.stderr = open(os.devnull, 'w', encoding='utf-8')
 
+    tcl_data = os.path.join(root, '_tcl_data')
+    tk_data = os.path.join(root, '_tk_data')
+    if os.path.isdir(tcl_data):
+        os.environ['TCL_LIBRARY'] = tcl_data
+    if os.path.isdir(tk_data):
+        os.environ['TK_LIBRARY'] = tk_data
+
     graphviz_bin = os.path.join(root, 'graphviz', 'bin')
     if os.path.isdir(graphviz_bin):
-        os.environ['PATH'] = graphviz_bin + os.pathsep + os.environ.get('PATH', '')
+        os.environ['PATH'] = os.environ.get('PATH', '') + os.pathsep + graphviz_bin
 
 
-def _write_startup_error():
+def _write_startup_error(show_dialog=True):
     path = os.path.join(_app_dir(), 'qelm_startup_error.txt')
     text = traceback.format_exc()
     try:
@@ -37,6 +44,8 @@ def _write_startup_error():
             handle.write(text)
     except Exception:
         pass
+    if not show_dialog:
+        return
     try:
         from tkinter import messagebox
         messagebox.showerror('QELM', 'QELM could not start. Details were saved to qelm_startup_error.txt.')
@@ -64,7 +73,7 @@ def main():
     except SystemExit:
         raise
     except Exception:
-        _write_startup_error()
+        _write_startup_error(show_dialog=not smoke_test)
         raise
 
 
