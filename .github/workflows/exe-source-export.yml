@@ -3,6 +3,8 @@ name: exe-source-export
 on:
   push:
     branches: [agent/build-qelm-exe]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
