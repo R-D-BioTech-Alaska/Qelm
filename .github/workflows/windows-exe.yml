@@ -1,0 +1,105 @@
+name: Windows executable
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          architecture: x64
+          cache: pip
+
+      - name: Install Python packages
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install --no-deps .
+          python -m pip install pyinstaller pillow pytest
+
+      - name: Prepare bundled data
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force build | Out-Null
+          python -m nltk.downloader -d build/nltk_data punkt punkt_tab stopwords
+          python -c "from PIL import Image; im=Image.open('docs/images/qelm_logo_small.png').convert('RGBA'); im.save('build/qelm.ico', sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])"
+          choco install graphviz -y --no-progress
+          $dot = Get-ChildItem 'C:\Program Files\Graphviz' -Recurse -Filter dot.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $dot) { throw 'Graphviz dot.exe was not found' }
+          $graphvizBin = $dot.Directory.FullName
+          New-Item -ItemType Directory -Force build/graphviz/bin | Out-Null
+          Copy-Item "$graphvizBin/*" build/graphviz/bin -Recurse -Force
+          Get-ChildItem build/graphviz/bin -File | Where-Object { $_.Name -match '^(tcl|tk)86.*\.dll$' } | Remove-Item -Force
+
+      - name: Test source
+        shell: pwsh
+        run: |
+          python -m compileall -q Qelm2.py QELMChatUI.py QelmInference.py QelmTokenizer.py qelm_exe.py qelm
+          pytest -q
+
+      - name: Build QELM
+        shell: pwsh
+        run: pyinstaller --noconfirm --clean QELM.spec
+
+      - name: Test executable dataset preparation
+        shell: pwsh
+        run: |
+          Set-Content -Path build/smoke.txt -Value 'QELM executable smoke test'
+          $inputPath = (Resolve-Path build/smoke.txt).Path
+          $outputPath = Join-Path $PWD 'build/smoke.u16'
+          $process = Start-Process -FilePath dist/QELM/QELM.exe -ArgumentList '--qelm_prep_tokens','--input',$inputPath,'--output',$outputPath -PassThru
+          if (-not $process.WaitForExit(120000)) {
+            Stop-Process -Id $process.Id -Force
+            throw 'QELM dataset preparation timed out'
+          }
+          if ($process.ExitCode -ne 0) { throw "QELM dataset preparation exited with $($process.ExitCode)" }
+          if (-not (Test-Path build/smoke.u16)) { throw 'QELM did not create the token file' }
+          if ((Get-Item build/smoke.u16).Length -lt 2) { throw 'QELM created an empty token file' }
+
+      - name: Test executable startup
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath dist/QELM/QELM.exe -ArgumentList '--qelm_exe_smoke' -PassThru
+          if (-not $process.WaitForExit(180000)) {
+            Stop-Process -Id $process.Id -Force
+            if (Test-Path dist/QELM/qelm_startup_error.txt) { Get-Content dist/QELM/qelm_startup_error.txt }
+            if (Test-Path dist/QELM/qelm_crashlog.txt) { Get-Content dist/QELM/qelm_crashlog.txt }
+            throw 'QELM startup test timed out'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path dist/QELM/qelm_startup_error.txt) { Get-Content dist/QELM/qelm_startup_error.txt }
+            if (Test-Path dist/QELM/qelm_crashlog.txt) { Get-Content dist/QELM/qelm_crashlog.txt }
+            throw "QELM startup test exited with $($process.ExitCode)"
+          }
+          if (-not (Test-Path dist/QELM/qelm_exe_smoke.ok)) { throw 'QELM did not finish its startup test' }
+          Remove-Item dist/QELM/qelm_exe_smoke.ok -Force
+
+      - name: Package executable
+        shell: pwsh
+        run: |
+          @'
+          @echo off
+          start "" "%~dp0QELM.exe"
+          '@ | Set-Content -Path dist/QELM/START_QELM.bat
+          tar.exe -a -c -f dist/QELM-Windows-x64.zip -C dist QELM
+          Get-FileHash dist/QELM-Windows-x64.zip -Algorithm SHA256 | Format-List
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QELM-Windows-x64
+          path: dist/QELM-Windows-x64.zip
+          if-no-files-found: error
+          retention-days: 30
