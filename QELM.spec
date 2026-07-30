@@ -81,6 +81,8 @@ exe = EXE(
     upx=False,
     console=False,
     icon=str(root / 'build' / 'qelm.ico'),
+    version=str(root / 'QELM.version'),
+    manifest=str(root / 'QELM.manifest'),
     runtime_tmpdir=None,
     append_pkg=True,
 )
