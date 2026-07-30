@@ -57,3 +57,5 @@ jobs:
           git add Quantum/Readme.md Moleque/Readme.md .github/workflows/update-subproject-license-notices.yml
           git commit -m "Update archived QELM subproject license notices"
           git push
+
+# one-time retry after source-distribution metadata update
