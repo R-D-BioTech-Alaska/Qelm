@@ -70,8 +70,10 @@ pyz = PYZ(analysis.pure)
 exe = EXE(
     pyz,
     analysis.scripts,
+    analysis.binaries,
+    analysis.datas,
     [],
-    exclude_binaries=True,
+    exclude_binaries=False,
     name='QELM',
     debug=False,
     bootloader_ignore_signals=False,
@@ -79,15 +81,6 @@ exe = EXE(
     upx=False,
     console=False,
     icon=str(root / 'build' / 'qelm.ico'),
-    contents_directory='.',
-)
-
-bundle = COLLECT(
-    exe,
-    analysis.binaries,
-    analysis.datas,
-    strip=False,
-    upx=False,
-    upx_exclude=[],
-    name='QELM',
+    runtime_tmpdir=None,
+    append_pkg=True,
 )
