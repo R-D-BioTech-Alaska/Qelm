@@ -1,27 +1,9 @@
-# CONTRIBUTING
+# Contributing to QELM
 
-**Project stance:** Single-file monolith by design. Do not propose refactors or modularization. If you do not understand it, don't mess it up.
+Issues, reproducibility reports, benchmark results, documentation corrections, and responsible security reports are welcome.
 
-## Allowed contributions
-- **Bugs** with minimal diffs + failing→passing repro.
-- **Performance** with measured speed/accuracy deltas.
-- **UI usability** that improves end-user workflow, not code layout.
-- **Docs** only when tied to a real feature or bugfix.
+The current QELM source is licensed under PolyForm Strict 1.0.0, which does not grant permission to create or distribute modifications. Do not publish a fork, patch, derivative work, or pull request containing modified QELM code without written permission from the applicable copyright holder.
 
-## Not accepted
-- Spelling/grammar-only edits
-- Style-only changes
-- Architecture refactors or file splits
-- “Drive-by” PRs without a linked issue + reproducer
+To request permission for a proposed code contribution, contact contact@qelm.org or contact@rdbiotechalaska.com before making or publishing the modification. Any accepted contribution will require written contributor terms that preserve the project's licensing and commercial-licensing rights.
 
-## For backend changes (required)
-1. Open an issue with: problem, minimal repro, proposed fix (≤200 words), risks.
-2. Include a **design note** (`docs/design/<issue-id>.md`) in the PR.
-3. Run `python QELM.py --selftest` and attach logs (first-100-steps loss ↓).
-4. Keep diff small and localized.
-
-## PR checklist (must pass)
-- [ ] Linked issue
-- [ ] Selftest logs attached
-- [ ] No unrelated changes
-- [ ] CI green
+Security reports should be sent privately rather than posted with exploit details.

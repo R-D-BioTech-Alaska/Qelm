@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Strict%201.0.0-orange.svg" alt="PolyForm Strict License 1.0.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/Qiskit-required-orange" alt="Qiskit required">
   <img src="https://img.shields.io/badge/Qiskit_Aer-required-green" alt="Qiskit Aer required">
@@ -139,7 +139,7 @@ It produces vocabulary logits, calculates next-token loss, estimates gradients, 
 
 The architecture, older versions, training paths, model files, benchmark material, and development history are public.
 
-The project can be downloaded, inspected, modified, tested, and challenged directly.
+The project can be downloaded, inspected, tested, and challenged for permitted noncommercial purposes. Modification, redistribution, and commercial use require separate written permission.
 
 </td>
 </tr>
@@ -841,7 +841,7 @@ When citing a specific implementation or benchmark, include the Git commit or re
 
 ## Contributing
 
-Issues, tests, benchmark results, documentation fixes, backend improvements, and pull requests are welcome.
+Issues, benchmark results, documentation corrections, and security reports are welcome. Code modifications and pull requests require prior written permission under the current source license.
 
 Useful contributions include:
 
@@ -869,9 +869,9 @@ Bug reports should include:
 
 ## License
 
-QELM is licensed under the **MIT License**.
+QELM is source-available under the **PolyForm Strict License 1.0.0**. Noncommercial use is permitted. Distribution, modification, derivative works, sublicensing, transfer, and commercial use require separate written permission.
 
-See [LICENSE](LICENSE) for details.
+See [LICENSE](LICENSE), [LICENSE_HISTORY.md](LICENSE_HISTORY.md), and [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md). Earlier versions lawfully obtained under MIT remain under their original MIT terms.
 
 ---
 
@@ -896,5 +896,5 @@ See [LICENSE](LICENSE) for details.
 </p>
 
 <p align="center">
-  <sub>QELM is a public research architecture under active development. Its source code, older versions, training paths, model structure, and current work are available for inspection, use, modification, and testing.</sub>
+  <sub>QELM is a public research architecture under active development. Its current source is available for inspection and permitted noncommercial use under the PolyForm Strict License 1.0.0. Modification, redistribution, and commercial use require written permission.</sub>
 </p>
