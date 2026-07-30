@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="#project-status"><img alt="Status: Archived" src="https://img.shields.io/badge/status-ARCHIVED-gray" /></a>
-  <a href="#license"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" /></a>
+  <a href="#license"><img alt="License: PolyForm Strict 1.0.0" src="https://img.shields.io/badge/License-PolyForm%20Strict%201.0.0-orange.svg" /></a>
   <img alt="Last update" src="https://img.shields.io/badge/last_update-2025--07--27-black" />
 </p>
 
@@ -147,7 +147,7 @@ There is **no active roadmap** for this repository. All new development occurs i
 
 ## License
 
-This project is released under the **MIT License**. See `LICENSE` in the root of the repository.
+The current source tree is source-available under the **PolyForm Strict License 1.0.0**. Noncommercial use is permitted; distribution, modification, derivative works, sublicensing, transfer, and commercial use require separate written permission. See `LICENSE`, `LICENSE_HISTORY.md`, and `COMMERCIAL_LICENSE.md` in the repository root. Earlier versions lawfully obtained under MIT remain under their original MIT terms.
 
 ---
 

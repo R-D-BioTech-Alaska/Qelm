@@ -169,7 +169,7 @@ Use whichever single-file GUI you like; they share the same core ideas.
 
 ## Contributing
 
-Issues and PRs welcome. Please include:
+Issues and reproducibility reports are welcome. Code modifications and pull requests require prior written permission under the current source license. Please include:
 
 * Repro steps and environment details
 * Minimal dataset snippet if possible
@@ -179,7 +179,7 @@ Issues and PRs welcome. Please include:
 
 ## License
 
-MIT
+The current source tree is source-available under the **PolyForm Strict License 1.0.0**. Noncommercial use is permitted; distribution, modification, derivative works, sublicensing, transfer, and commercial use require separate written permission. See `LICENSE`, `LICENSE_HISTORY.md`, and `COMMERCIAL_LICENSE.md` in the repository root. Earlier versions lawfully obtained under MIT remain under their original MIT terms.
 
 ---
 
