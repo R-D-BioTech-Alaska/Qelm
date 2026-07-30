@@ -364,6 +364,14 @@ def _clone_model_for_worker(src_model):
 
 import sys, json, time, logging, traceback, threading, multiprocessing, concurrent.futures, queue, subprocess, pickle
 import itertools
+
+
+def _qelm_python_command(*args):
+    if getattr(sys, 'frozen', False):
+        return [sys.executable, *args]
+    return [sys.executable, os.path.abspath(__file__), *args]
+
+
 from collections import defaultdict, Counter
 from typing import List, Dict, Tuple, Optional, Callable, Union
 from dataclasses import dataclass
@@ -6556,7 +6564,7 @@ def load_real_dataset(
         else:
             progress_callback(0.20, "Encoding dataset via isolated subprocess (Windows-stable)...")
             import subprocess, sys, json
-            cmd = [sys.executable, os.path.abspath(__file__), '--qelm_prep_tokens', '--input', file_path, '--output', tokens_path]
+            cmd = _qelm_python_command('--qelm_prep_tokens', '--input', file_path, '--output', tokens_path)
             p = subprocess.run(cmd, capture_output=True, text=True)
             if p.returncode != 0:
                 msg = (p.stderr or p.stdout or '').strip()
@@ -6788,14 +6796,13 @@ def load_hf_dataset(
         progress_callback(0.25, f"Reusing cached HF tokens: {os.path.basename(tokens_path)}")
     else:
         progress_callback(0.10, f"Preparing Hugging Face dataset via subprocess: {ds} [{cfg or 'default'}] split={sp} col={col}")
-        cmd = [
-            sys.executable, os.path.abspath(__file__),
+        cmd = _qelm_python_command(
             '--qelm_prep_hf',
             '--dataset', ds,
             '--split', sp,
             '--text_column', col,
             '--output', tokens_path,
-        ]
+        )
         if cfg:
             cmd += ['--config', cfg]
         if int(max_examples) > 0:
