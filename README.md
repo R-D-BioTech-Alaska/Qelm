@@ -39,9 +39,9 @@
 </p>
 
 <p align="center">
-  <strong>Main program:</strong> <code>Qelm2.py</code>
+  <strong>Main program:</strong> <code>Qelm.exe</code> or <code>Qelm2.py</code>
   &nbsp;&nbsp;•&nbsp;&nbsp;
-  <strong>Chat interface:</strong> <code>QELMChatUI.py</code>
+  <strong>Chat interface:</strong> Main program folder <code>QELMChatUI.py</code>
   &nbsp;&nbsp;•&nbsp;&nbsp;
   <strong>Legacy implementations:</strong> <code>Outdated/</code>
 </p>
