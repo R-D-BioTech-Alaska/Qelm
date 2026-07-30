@@ -42,6 +42,7 @@ jobs:
           $graphvizBin = $dot.Directory.FullName
           New-Item -ItemType Directory -Force build/graphviz/bin | Out-Null
           Copy-Item "$graphvizBin/*" build/graphviz/bin -Recurse -Force
+          Get-ChildItem build/graphviz/bin -File | Where-Object { $_.Name -match '^(tcl|tk)86.*\.dll$' } | Remove-Item -Force
 
       - name: Test source
         shell: pwsh
