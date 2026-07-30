@@ -1,0 +1,52 @@
+name: export-qelm-exe
+
+on:
+  push:
+    branches: [agent/export-qelm-exe]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download and split executable
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          curl -L --fail \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/R-D-BioTech-Alaska/Qelm/actions/artifacts/8747649348/zip \
+            -o /tmp/qelm-artifact.zip
+          mkdir -p /tmp/qelm-artifact /tmp/qelm-parts
+          unzip -q /tmp/qelm-artifact.zip -d /tmp/qelm-artifact
+          test -f /tmp/qelm-artifact/QELM-Windows-x64.zip
+          sha256sum /tmp/qelm-artifact/QELM-Windows-x64.zip | tee /tmp/qelm-parts/QELM-Windows-x64.sha256
+          split -b 300M -d -a 2 /tmp/qelm-artifact/QELM-Windows-x64.zip /tmp/qelm-parts/QELM-Windows-x64.zip.part-
+          test -f /tmp/qelm-parts/QELM-Windows-x64.zip.part-00
+          test -f /tmp/qelm-parts/QELM-Windows-x64.zip.part-01
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QELM-Windows-x64-part-00
+          path: /tmp/qelm-parts/QELM-Windows-x64.zip.part-00
+          compression-level: 0
+          retention-days: 1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QELM-Windows-x64-part-01
+          path: /tmp/qelm-parts/QELM-Windows-x64.zip.part-01
+          compression-level: 0
+          retention-days: 1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QELM-Windows-x64-manifest
+          path: /tmp/qelm-parts/QELM-Windows-x64.sha256
+          retention-days: 1
