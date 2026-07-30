@@ -1,0 +1,20 @@
+name: exe-source-export
+
+on:
+  push:
+    branches: [agent/build-qelm-exe]
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qelm-exe-source
+          path: .
+          include-hidden-files: true
+          retention-days: 1
