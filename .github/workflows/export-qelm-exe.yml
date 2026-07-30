@@ -3,6 +3,8 @@ name: export-qelm-exe
 on:
   push:
     branches: [agent/export-qelm-exe]
+  pull_request:
+    branches: [main]
 
 permissions:
   actions: read
