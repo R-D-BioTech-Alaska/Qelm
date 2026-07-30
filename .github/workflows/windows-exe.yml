@@ -1,4 +1,4 @@
-name: Windows executable
+name: Windows single-file executable
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
           python -m pip install --no-deps .
           python -m pip install pyinstaller pillow pytest
 
-      - name: Prepare bundled data
+      - name: Prepare embedded data
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force build | Out-Null
@@ -50,9 +50,20 @@ jobs:
           python -m compileall -q Qelm2.py QELMChatUI.py QelmInference.py QelmTokenizer.py qelm_exe.py qelm
           pytest -q
 
-      - name: Build QELM
+      - name: Build single QELM executable
         shell: pwsh
         run: pyinstaller --noconfirm --clean QELM.spec
+
+      - name: Verify single-file output
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem dist -File)
+          $directories = @(Get-ChildItem dist -Directory)
+          if ($directories.Count -ne 0) { throw 'The build produced a directory; QELM must be one executable.' }
+          if ($files.Count -ne 1 -or $files[0].Name -ne 'QELM.exe') {
+            throw "Expected only dist/QELM.exe, found: $($files.Name -join ', ')"
+          }
+          Get-Item dist/QELM.exe | Format-List Name,Length,FullName
 
       - name: Test executable dataset preparation
         shell: pwsh
@@ -60,8 +71,9 @@ jobs:
           Set-Content -Path build/smoke.txt -Value 'QELM executable smoke test'
           $inputPath = (Resolve-Path build/smoke.txt).Path
           $outputPath = Join-Path $PWD 'build/smoke.u16'
-          $process = Start-Process -FilePath dist/QELM/QELM.exe -ArgumentList '--qelm_prep_tokens','--input',$inputPath,'--output',$outputPath -PassThru
-          if (-not $process.WaitForExit(120000)) {
+          $env:QELM_OUTPUT_DIR = (Resolve-Path build).Path
+          $process = Start-Process -FilePath dist/QELM.exe -ArgumentList '--qelm_prep_tokens','--input',$inputPath,'--output',$outputPath -PassThru
+          if (-not $process.WaitForExit(300000)) {
             Stop-Process -Id $process.Id -Force
             throw 'QELM dataset preparation timed out'
           }
@@ -72,34 +84,31 @@ jobs:
       - name: Test executable startup
         shell: pwsh
         run: |
-          $process = Start-Process -FilePath dist/QELM/QELM.exe -ArgumentList '--qelm_exe_smoke' -PassThru
-          if (-not $process.WaitForExit(180000)) {
+          $env:QELM_OUTPUT_DIR = (Resolve-Path build).Path
+          $process = Start-Process -FilePath dist/QELM.exe -ArgumentList '--qelm_exe_smoke' -PassThru
+          if (-not $process.WaitForExit(600000)) {
             Stop-Process -Id $process.Id -Force
-            if (Test-Path dist/QELM/qelm_startup_error.txt) { Get-Content dist/QELM/qelm_startup_error.txt }
-            if (Test-Path dist/QELM/qelm_crashlog.txt) { Get-Content dist/QELM/qelm_crashlog.txt }
+            if (Test-Path build/qelm_startup_error.txt) { Get-Content build/qelm_startup_error.txt }
+            if (Test-Path build/qelm_crashlog.txt) { Get-Content build/qelm_crashlog.txt }
             throw 'QELM startup test timed out'
           }
           if ($process.ExitCode -ne 0) {
-            if (Test-Path dist/QELM/qelm_startup_error.txt) { Get-Content dist/QELM/qelm_startup_error.txt }
-            if (Test-Path dist/QELM/qelm_crashlog.txt) { Get-Content dist/QELM/qelm_crashlog.txt }
+            if (Test-Path build/qelm_startup_error.txt) { Get-Content build/qelm_startup_error.txt }
+            if (Test-Path build/qelm_crashlog.txt) { Get-Content build/qelm_crashlog.txt }
             throw "QELM startup test exited with $($process.ExitCode)"
           }
-          if (-not (Test-Path dist/QELM/qelm_exe_smoke.ok)) { throw 'QELM did not finish its startup test' }
-          Remove-Item dist/QELM/qelm_exe_smoke.ok -Force
+          if (-not (Test-Path build/qelm_exe_smoke.ok)) { throw 'QELM did not finish its startup test' }
+          Remove-Item build/qelm_exe_smoke.ok -Force
 
-      - name: Package executable
+      - name: Checksum executable
         shell: pwsh
         run: |
-          @'
-          @echo off
-          start "" "%~dp0QELM.exe"
-          '@ | Set-Content -Path dist/QELM/START_QELM.bat
-          tar.exe -a -c -f dist/QELM-Windows-x64.zip -C dist QELM
-          Get-FileHash dist/QELM-Windows-x64.zip -Algorithm SHA256 | Format-List
+          Get-FileHash dist/QELM.exe -Algorithm SHA256 | Format-List
 
       - uses: actions/upload-artifact@v4
         with:
-          name: QELM-Windows-x64
-          path: dist/QELM-Windows-x64.zip
+          name: QELM-Single-EXE-Windows-x64
+          path: dist/QELM.exe
           if-no-files-found: error
           retention-days: 30
+          compression-level: 0
