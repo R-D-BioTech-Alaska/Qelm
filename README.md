@@ -16,13 +16,13 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Strict%201.0.0-orange.svg" alt="PolyForm Strict License 1.0.0"></a>
-  <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/Qiskit-required-orange" alt="Qiskit required">
-  <img src="https://img.shields.io/badge/Qiskit_Aer-required-green" alt="Qiskit Aer required">
+  <img src="https://img.shields.io/badge/Python-3.11%2B-blue" alt="Python 3.11+">
+  <img src="https://img.shields.io/badge/Qiskit-optional-purple" alt="Qiskit optional">
+  <img src="https://img.shields.io/badge/Qiskit%20Aer-optional-green" alt="Qiskit Aer optional">
   <img src="https://img.shields.io/github/stars/R-D-BioTech-Alaska/QELM?style=social" alt="GitHub Stars">
   <a href="https://pepy.tech/projects/qelm"><img src="https://static.pepy.tech/badge/qelm" alt="PyPI Downloads"></a>
   <a href="https://pypi.org/project/qelm/"><img src="https://img.shields.io/pypi/v/qelm.svg" alt="PyPI Version"></a>
-  <img src="https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2FR-D-BioTech-Alaska%2FQelm%2Fmain%2Fbadges%2Fdays_active.json" alt="Days Active">
+  <img src="https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2FR-D-BioTech-Alaska%2FQELM%2Fmain%2Fbadges%2Fdays_active.json" alt="Days Active">
 </p>
 
 <p align="center">
