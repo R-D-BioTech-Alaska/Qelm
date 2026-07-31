@@ -3707,8 +3707,158 @@
       "date": "2026-07-29",
       "sha": "615f095",
       "subject": "Fix current QELM build"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "0f727a9",
+      "subject": "Embed Windows identity metadata"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "182ae4a",
+      "subject": "Add QELM source-license notice"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "1b33b67",
+      "subject": "chore(status): # QELM — Day 609"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "1c7e110",
+      "subject": "Build Windows QELM executable"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "1df4741",
+      "subject": "Add QELM trademark policy"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "22f2ee5",
+      "subject": "Build QELM as one executable"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "2a404f5",
+      "subject": "Document QELM license transition"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "3042499",
+      "subject": "Add Windows publisher metadata"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "415f095",
+      "subject": "Remove duplicate embedded NLTK archives"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "434e45c",
+      "subject": "Update QELM license references and contribution policy"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "4fdd14c",
+      "subject": "Retry QELM subproject license notice migration"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "50c8a40",
+      "subject": "Update QELM package license metadata"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "52cd43b",
+      "subject": "Add Windows application manifest"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "5fb5c25",
+      "subject": "Test one-file runtime paths"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "61d9b63",
+      "subject": "Update archived QELM subproject license notices"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "63af0ac",
+      "subject": "Run one-time QELM license metadata migration"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "8270b90",
+      "subject": "Include QELM licensing files in source distributions"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "96f37a9",
+      "subject": "Resolve embedded one-file resources"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "a212386",
+      "subject": "Run one-time QELM subproject license notice migration"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "cfacbc1",
+      "subject": "Change QELM license to PolyForm Strict 1.0.0"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "dbf180b",
+      "subject": "Add trusted release signing and Defender gate"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "e88cea6",
+      "subject": "Build and validate a single QELM.exe"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "eb0f646",
+      "subject": "Bump nltk from 3.9.4 to 3.10.0"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "ee8a579",
+      "subject": "Use exact PolyForm Strict 1.0.0 license text"
+    },
+    {
+      "date": "2026-07-29",
+      "sha": "f14475b",
+      "subject": "Add QELM commercial licensing terms"
+    },
+    {
+      "date": "2026-07-30",
+      "sha": "14105d5",
+      "subject": "Delete tests directory"
+    },
+    {
+      "date": "2026-07-30",
+      "sha": "401dc9d",
+      "subject": "Update README.md"
+    },
+    {
+      "date": "2026-07-30",
+      "sha": "411eb6f",
+      "subject": "Merge pull request #26 from R-D-BioTech-Alaska/agent/build-qelm-exe"
+    },
+    {
+      "date": "2026-07-30",
+      "sha": "e2302cd",
+      "subject": "Update README.md"
+    },
+    {
+      "date": "2026-07-30",
+      "sha": "fa18566",
+      "subject": "Merge pull request #25 from R-D-BioTech-Alaska/dependabot/pip/nltk-3.10.0"
     }
   ],
-  "last_commit_sha": "40ae1cd991b55d685f4bf559d996282b680ae40a",
-  "last_checked": "2026-07-30T03:31:08Z"
+  "last_commit_sha": "401dc9dad059badb1d38b8d0536461ef04d17121",
+  "last_checked": "2026-07-31T03:51:57Z"
 }
