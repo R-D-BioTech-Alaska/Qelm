@@ -34,6 +34,11 @@
 ---
 
 <p align="center">
+  QELM is currently taking a backseat to Brain. Brain is currently exponentially ahead of the current Qelm structure, however Qelm is extremely useful for learning quantum circuits in NLP and understanding how
+  brain was built and its core works. Qelm will be updated as soon as Brain is benchmarked against QWEN 3.6 27b.
+</p>  
+
+<p align="center">
   QELM is not a classical language model with a small quantum circuit attached to it.<br>
   It is a complete language-model framework built around trainable quantum circuits, quantum channels, sub-bit encoding, next-token prediction, model training, dataset preparation, multiple backends, and direct user interfaces.
 </p>
