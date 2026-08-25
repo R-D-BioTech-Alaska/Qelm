@@ -53,6 +53,8 @@
 
  Qiskit will eventually no longer be required for every local QELM path, but it will remain recommended and an important part of QELM's development. Qiskit, Qiskit Aer, and IBM Runtime will still be required for their related simulation and hardware features. 
 
+ QSA will be taking over for local quantum computations.
+
 <p align="center">
   <img src="docs/images/qelmtrainer.png" alt="QELM Trainer" width="850">
 </p>
